@@ -1,14 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es2019",
-    "module": "commonjs",
-    "lib": ["es2019"],
+    "target": "ES2019",
+    "module": "CommonJS",
+    "lib": ["ES2019"],
     "strict": true,
-    "moduleResolution": "node",
-    "noErrorTruncation": true,
-    "removeComments": true,
-    "newLine": "LF",
-    "outDir": "../distribution"
-  },
-  "include": ["index.ts"]
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Node",
+    "newLine": "lf"
+  }
 }
