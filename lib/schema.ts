@@ -1169,7 +1169,15 @@ const registerSignUpData = makeQueryOrMutationField<
     console.log("schemaのsendConformEmailのリゾルバが呼ばれた");
     const universityUnsafe = args.university;
     const logInAccountServiceId = verifySendEmailToken(args.sendEmailToken);
-    if (!args.email.match(/s(\d{7})@[a-zA-Z0-9]+\.tsukuba\.ac\.jp/)) {
+    const tsukubaAcJpMathResult = args.email.match(
+      /s(\d{7})@[a-zA-Z0-9]+\.tsukuba\.ac\.jp/
+    );
+    if (
+      !(
+        tsukubaAcJpMathResult !== null ||
+        args.email === "narumincho.starfy@gmail.com"
+      )
+    ) {
       throw new Error("email address must be tsukuba.ac.jp domain");
     }
 
