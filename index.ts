@@ -103,12 +103,7 @@ export const api = functions
   })
   .https.onRequest(async (request, response) => {
     console.log("API called");
-    response.setHeader("access-control-allow-origin", "https://tsukumart.com");
-    response.setHeader("vary", "Origin");
-    if (request.method === "OPTIONS") {
-      response.setHeader("access-control-allow-methods", "POST, GET, OPTIONS");
-      response.setHeader("access-control-allow-headers", "content-type");
-      response.status(200).send("");
+    if (supportCrossOriginResourceSharing(request, response)) {
       return;
     }
     await graphqlHTTP({ schema: libSchema.schema, graphiql: true })(
@@ -153,12 +148,7 @@ export const notifyCallBack = functions
 export const image = functions
   .region("asia-northeast1")
   .https.onRequest((request, response) => {
-    response.setHeader("access-control-allow-origin", "https://tsukumart.com");
-    response.setHeader("vary", "Origin");
-    if (request.method === "OPTIONS") {
-      response.setHeader("access-control-allow-methods", "POST, GET, OPTIONS");
-      response.setHeader("access-control-allow-headers", "content-type");
-      response.status(200).send("");
+    if (supportCrossOriginResourceSharing(request, response)) {
       return;
     }
     try {
@@ -172,6 +162,38 @@ export const image = functions
       response.status(404).send("not found");
     }
   });
+
+/**
+ * CrossOriginResourceSharing の 処理をする.
+ * @returns true → メインの処理をしなくていい, false → メインの処理をする必要がある
+ */
+const supportCrossOriginResourceSharing = (
+  request: functions.https.Request,
+  response: functions.Response
+): boolean => {
+  response.setHeader("vary", "Origin");
+  response.setHeader(
+    "access-control-allow-origin",
+    allowOrigin(request.headers.origin)
+  );
+  if (request.method === "OPTIONS") {
+    response.setHeader("access-control-allow-methods", "POST, GET, OPTIONS");
+    response.setHeader("access-control-allow-headers", "content-type");
+    response.status(200).send("");
+    return true;
+  }
+  return false;
+};
+
+const allowOrigin = (httpHeaderOrigin: unknown): string => {
+  if (
+    httpHeaderOrigin === "http://localhost:2520" ||
+    httpHeaderOrigin === "https://tsukumart.com"
+  ) {
+    return httpHeaderOrigin;
+  }
+  return "https://tsukumart.com";
+};
 
 /*
  * =====================================================================
