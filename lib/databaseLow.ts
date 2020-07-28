@@ -1,7 +1,7 @@
 import * as type from "./type";
 import * as firestore from "@google-cloud/firestore";
 import * as admin from "firebase-admin";
-import * as sharp from "sharp";
+import * as jimp from "jimp";
 import * as stream from "stream";
 
 const initializedAdmin = admin.initializeApp();
@@ -715,26 +715,28 @@ export const saveThumbnailImageToCloudStorage = async (
 ): Promise<string> => {
   const fileId = createRandomFileId();
   const file = storage.file(fileId);
-  file.save(await sharp(data).resize(300, 300, { fit: "inside" }).toBuffer(), {
-    contentType: mimeType,
-  });
+  file.save(
+    await (await jimp.create(data))
+      .cover(300, 300)
+      .getBufferAsync(jimp.MIME_PNG),
+    {
+      contentType: mimeType,
+    }
+  );
   return fileId;
 };
 
 export const saveThumbnailImageFromCloudStorageToCloudStorage = async (
   fileId: string
-): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const thumbnailFileId = createRandomFileId();
-    const writeStream = storage.file(thumbnailFileId).createWriteStream();
-    const readStream = storage.file(fileId).createReadStream();
-    readStream.addListener("end", () => {
-      resolve(thumbnailFileId);
-    });
-    readStream
-      .pipe(sharp().resize(300, 300, { fit: "inside" }).jpeg())
-      .pipe(writeStream);
-  });
+): Promise<string> => {
+  const thumbnailFileId = createRandomFileId();
+  const fullImage = await storage.file(fileId).download();
+  const thumbnailImage = await (await jimp.create(fullImage[0]))
+    .cover(300, 300)
+    .getBufferAsync(jimp.MIME_JPEG);
+  await storage.file(thumbnailFileId).save(thumbnailImage);
+  return thumbnailFileId;
+};
 /**
  * ランダムなファイル名を生成する
  */
