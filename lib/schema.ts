@@ -86,10 +86,11 @@ const makeQueryOrMutationField = <
   ) => Promise<Return<Type>>;
   description: string;
 }): g.GraphQLFieldConfig<void, void, any> => args;
-/*  =============================================================
-                            Product
-    =============================================================
-*/
+/*
+ *  =============================================================
+ *                          Product
+ *  =============================================================
+ */
 const setProductData = async (
   source: Return<type.ProductInternal>
 ): ReturnType<typeof database.getProduct> => {
@@ -283,10 +284,11 @@ const productGraphQLType: g.GraphQLObjectType<
       }),
     }),
 });
-/*  =============================================================
-                         Product Comment
-    =============================================================
-*/
+/*
+ *  =============================================================
+ *                       Product Comment
+ *  =============================================================
+ */
 const productCommentGraphQLType = new g.GraphQLObjectType({
   name: "ProductComment",
   fields: () =>
@@ -311,10 +313,11 @@ const productCommentGraphQLType = new g.GraphQLObjectType({
     }),
 });
 
-/*  =============================================================
-                        Draft Product
-    =============================================================
-*/
+/*
+ *  =============================================================
+ *                      Draft Product
+ *  =============================================================
+ */
 /**
  * 商品の下書き。すべてフィールドをresolveで返さなければならない
  */
@@ -370,10 +373,11 @@ export const draftProductGraphQLType = new g.GraphQLObjectType<
   description: "商品の下書き",
 });
 
-/*  =============================================================
-                            User
-    =============================================================
-*/
+/*
+ *  =============================================================
+ *                          User
+ *  =============================================================
+ */
 const setUserData = async (
   source: Return<type.UserInternal>
 ): ReturnType<typeof database.getUserData> => {
@@ -468,10 +472,11 @@ const userGraphQLType = new g.GraphQLObjectType({
   description: "ユーザー",
 });
 
-/*  =============================================================
-                            User Private
-    =============================================================
-*/
+/*
+ *  =============================================================
+ *                          User Private
+ *  =============================================================
+ */
 const setUserPrivateData = async (
   source: Return<type.UserPrivateInternal>
 ): ReturnType<typeof database.getUserData> => {
@@ -671,10 +676,11 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
   description: "個人的な情報を含んだユーザーの情報",
 });
 
-/*  =============================================================
-                            Trade
-    =============================================================
-*/
+/*
+ *  =============================================================
+ *                          Trade
+ *  =============================================================
+ */
 const setTradeData = async (
   source: Return<type.Trade>
 ): ReturnType<typeof database.getTrade> => {
@@ -767,10 +773,11 @@ const tradeGraphQLType = new g.GraphQLObjectType({
     }),
   description: "取引データ",
 });
-/*  =============================================================
-                         Trade Comment
-    =============================================================
-*/
+/*
+ *  =============================================================
+ *                       Trade Comment
+ *  =============================================================
+ */
 const tradeCommentGraphQLType = new g.GraphQLObjectType({
   name: "TradeComment",
   fields: () =>
@@ -795,10 +802,11 @@ const tradeCommentGraphQLType = new g.GraphQLObjectType({
     }),
 });
 
-/*  =============================================================
-                            Query
-    =============================================================
-*/
+/*
+ *  =============================================================
+ *                          Query
+ *  =============================================================
+ */
 
 const hello = makeQueryOrMutationField<{}, string>({
   args: {},
@@ -1060,10 +1068,11 @@ const includeTradeData = (
   }
   return false;
 };
-/*  =============================================================
-                            Mutation
-    =============================================================
-*/
+/*
+ *  =============================================================
+ *                          Mutation
+ *  =============================================================
+ */
 
 /**
  * 新規登録かログインするためのURLを得る。
@@ -1256,7 +1265,7 @@ const updateProfile = makeQueryOrMutationField<
   ) => {
     const userId = await database.verifyAccessToken(accessToken);
     const profileData = await database.setProfile(userId, {
-      displayName: displayName,
+      displayName,
       image,
       introduction,
       university: type.universityFromInternal(university),
@@ -1789,10 +1798,11 @@ const finishTrade = makeQueryOrMutationField<
   },
   description: "取引を完了する",
 });
-/*  =============================================================
-                            Schema
-    =============================================================
-*/
+/*
+ *  =============================================================
+ *                          Schema
+ *  =============================================================
+ */
 
 export const schema = new g.GraphQLSchema({
   query: new g.GraphQLObjectType({

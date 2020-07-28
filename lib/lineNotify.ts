@@ -68,7 +68,6 @@ export const callBack = async (
     );
 
     response.send("LINE Notifyのエラーだ。悲しい😥");
-    return;
   }
 };
 

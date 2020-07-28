@@ -1,7 +1,8 @@
 import * as g from "graphql";
 import { URL } from "url";
 
-/*  ===================================
+/*
+ *  ===================================
  *              URL
  * ====================================
  */
@@ -14,7 +15,8 @@ const urlTypeScalarTypeConfig: g.GraphQLScalarTypeConfig<URL, string> = {
 
 export const urlGraphQLType = new g.GraphQLScalarType(urlTypeScalarTypeConfig);
 
-/** ===================================
+/**
+ * ===================================
  *           Data URL
  * ====================================
  */
@@ -39,7 +41,8 @@ const dataUrlTypeConfig: g.GraphQLScalarTypeConfig<DataURL, string> = {
 };
 
 export const dataUrlGraphQLType = new g.GraphQLScalarType(dataUrlTypeConfig);
-/** ===================================
+/**
+ * ===================================
  *            DateTime
  * ====================================
  */
@@ -62,7 +65,8 @@ const dateTimeTypeConfig: g.GraphQLScalarTypeConfig<Date, number> = {
 };
 
 export const dateTimeGraphQLType = new g.GraphQLScalarType(dateTimeTypeConfig);
-/** ===================================
+/**
+ * ===================================
  *           AccountService
  * ====================================
  */
@@ -89,7 +93,8 @@ export const checkAccountServiceValues = (
   }
   return null;
 };
-/** ===================================
+/**
+ * ===================================
  *            University
  * ====================================
  */
@@ -301,7 +306,8 @@ export const universityGraphQLObjectType = new g.GraphQLObjectType({
   description: "大学での所属",
 });
 
-/** ==============================
+/**
+ * ==============================
  *            User
  * ===============================
  */
@@ -325,7 +331,8 @@ export type User = {
   soldProductAll: Array<Product>;
   createdAt: Date;
 };
-/** ==============================
+/**
+ * ==============================
  *         User Private
  * ===============================
  */
@@ -363,7 +370,8 @@ export type UserPrivate = {
   tradedAll: Array<Trade>;
 };
 
-/** ==============================
+/**
+ * ==============================
  *           Product
  * ===============================
  */
@@ -402,7 +410,8 @@ export type Product = {
   createdAt: Date;
   updateAt: Date;
 };
-/** ==============================
+/**
+ * ==============================
  *      Product Comment
  * ===============================
  */
@@ -419,7 +428,8 @@ export type ProductCommentInternal = {
   speaker: UserInternal;
   createAt: Date;
 };
-/** ==============================
+/**
+ * ==============================
  *      Product Status
  * ===============================
  */
@@ -442,7 +452,8 @@ export const productStatusGraphQLType = new g.GraphQLEnumType({
   description: "取引中の状態",
   values: productStatusValues,
 });
-/** ==============================
+/**
+ * ==============================
  *        Draft Product
  * ===============================
  */
@@ -459,7 +470,8 @@ export type DraftProduct = {
   updateAt: Date;
 };
 
-/** ==============================
+/**
+ * ==============================
  *           Condition
  * ===============================
  */
@@ -493,7 +505,8 @@ export const conditionGraphQLType = new g.GraphQLEnumType({
   values: conditionValues,
   description: conditionDescription,
 });
-/* ===============================
+/*
+ * ===============================
  *       Category Group
  * ===============================
  */
@@ -531,7 +544,8 @@ export const categoryGroupGraphQLType = new g.GraphQLEnumType({
   values: categoryGroupValues,
   description: categoryGroupDescription,
 });
-/* ===============================
+/*
+ * ===============================
  *          Category
  * ===============================
  */
@@ -738,7 +752,8 @@ export const categoryListFromGroup = (
       ];
   }
 };
-/* ===============================
+/*
+ * ===============================
  *             Trade
  * ===============================
  */
@@ -783,7 +798,8 @@ export const TradeStatusGraphQLType = new g.GraphQLEnumType({
   description: tradeStatusDescription,
 });
 
-/* ===============================
+/*
+ * ===============================
  *        Trade Comment
  * ===============================
  */
@@ -793,7 +809,8 @@ export type TradeComment = {
   speaker: SellerOrBuyer;
   createdAt: Date;
 };
-/* ===============================
+/*
+ * ===============================
  *        Trade Comment
  * ===============================
  */
@@ -815,7 +832,8 @@ export const sellerOrBuyerGraphQLType = new g.GraphQLEnumType({
   values: sellerOrBuyerValues,
   description: sellerOrBuyerDescription,
 });
-/* ===============================
+/*
+ * ===============================
  *      LogInService And Id
  * ===============================
  */
@@ -843,7 +861,7 @@ export const logInServiceAndIdFromString = (
     throw new Error("logInAccount is invalid" + result[1]);
   }
   return {
-    service: service,
+    service,
     serviceId: result[2],
   };
 };

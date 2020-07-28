@@ -21,10 +21,11 @@ const lineNotifyStateCollection = dataBase.collection("lineNotifyState");
 const productCollectionRef = dataBase.collection("product");
 const productDeletedCollectionRef = dataBase.collection("productDeleted");
 const tradeCollectionRef = dataBase.collection("trade");
-/* ==========================================
-                    User
-   ==========================================
-*/
+/*
+ * ==========================================
+ *                  User
+ * ==========================================
+ */
 export type UserData = {
   displayName: string;
   imageId: string;
@@ -246,7 +247,7 @@ export const getUserByLogInServiceAndId = async (
     "==",
     type.logInServiceAndIdToString(logInServiceAndId)
   );
-  if (0 < queryDocumentSnapshot.length) {
+  if (queryDocumentSnapshot.length > 0) {
     const snapshot = queryDocumentSnapshot[0];
     return { id: snapshot.id };
   }
@@ -271,7 +272,7 @@ const getUserListFromCondition = async <Field extends keyof UserData>(
   fieldName: Field,
   operator: firestore.WhereFilterOp,
   value: UserData[Field]
-): Promise<firestore.QueryDocumentSnapshot[]> =>
+): Promise<Array<firestore.QueryDocumentSnapshot>> =>
   (await userCollectionRef.where(fieldName, operator, value).get()).docs;
 
 const getUserPrivateListFromCondition = async <
@@ -280,16 +281,17 @@ const getUserPrivateListFromCondition = async <
   fieldName: Field,
   operator: firestore.WhereFilterOp,
   value: UserPrivateData[Field]
-): Promise<firestore.QueryDocumentSnapshot[]> =>
+): Promise<Array<firestore.QueryDocumentSnapshot>> =>
   (await userPrivateCollectionRef.where(fieldName, operator, value).get()).docs;
 
 export const deleteUser = async () => {
   //サブコレクションを手動で削除しなければならない。履歴、下書きなど
 };
-/* ==========================================
-            User Before Input Data
-   ==========================================
-*/
+/*
+ * ==========================================
+ *          User Before Input Data
+ * ==========================================
+ */
 type UserBeforeInputDataData = {
   name: string;
   imageId: string;
@@ -320,10 +322,11 @@ export const getAndDeleteUserBeforeInputData = async (
   await docRef.delete();
   return userBeforeInputData as UserBeforeInputDataData;
 };
-/* ==========================================
-         User Before Email Verification
-   ==========================================
-*/
+/*
+ * ==========================================
+ *       User Before Email Verification
+ * ==========================================
+ */
 type UserBeforeEmailVerificationData = {
   firebaseAuthUserId: string;
   name: string;
@@ -359,10 +362,11 @@ export const deleteUserBeforeEmailVerification = async (
     .doc(type.logInServiceAndIdToString(logInAccountServiceId))
     .delete();
 };
-/* ==========================================
-                    Product
-   ==========================================
-*/
+/*
+ * ==========================================
+ *                  Product
+ * ==========================================
+ */
 export type ProductData = {
   name: string;
   price: number;
@@ -565,10 +569,11 @@ export const addDeletedProduct = async (
 ): Promise<void> => {
   await productDeletedCollectionRef.add(data);
 };
-/* ==========================================
-                    Trade
-   ==========================================
-*/
+/*
+ * ==========================================
+ *                  Trade
+ * ==========================================
+ */
 export type Trade = {
   productId: string;
   buyerUserId: string;
@@ -617,9 +622,10 @@ export const getTradeComments = async (
   (await querySnapshotToIdAndDataArray(
     await tradeCollectionRef.doc(id).collection("comment").get()
   )) as Array<{ id: string; data: TradeComment }>;
-/* ==========================================
-   ==========================================
-*/
+/*
+ * ==========================================
+ * ==========================================
+ */
 
 /**
  * クエリの解析結果を配列に変換する
@@ -629,19 +635,21 @@ const querySnapshotToIdAndDataArray = (
   querySnapshot: FirebaseFirestore.QuerySnapshot
 ): Array<{ id: string; data: FirebaseFirestore.DocumentData }> =>
   querySnapshot.docs.map((result) => ({ id: result.id, data: result.data() }));
-/* ==========================================
-                Time Stamp
-   ==========================================
-*/
+/*
+ * ==========================================
+ *              Time Stamp
+ * ==========================================
+ */
 export const getNowTimestamp = (): firestore.Timestamp =>
   firestore.Timestamp.now();
 
 export const timestampToDate = (timeStamp: firestore.Timestamp): Date =>
   timeStamp.toDate();
-/* ==========================================
-        Firebase Authentication 
-   ==========================================
-*/
+/*
+ * ==========================================
+ *      Firebase Authentication
+ * ==========================================
+ */
 /**
  * Firebase Authenticationのユーザーをランダムなパスワードで作成する
  * // メールを送るためだけのアカウント。実際のユーザーは別で管理する
@@ -662,9 +670,9 @@ export const createFirebaseAuthUserByRandomPassword = (
         initializedAdmin
           .auth()
           .createUser({
-            email: email,
+            email,
             password: createRandomPassword(),
-            displayName: displayName,
+            displayName,
           })
           .then((user) => {
             resolve(user.uid);
@@ -674,7 +682,7 @@ export const createFirebaseAuthUserByRandomPassword = (
 
 const createRandomPassword = (): string => {
   let id = "";
-  const charTable: string =
+  const charTable =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   for (let i = 0; i < 32; i++) {
     id += charTable[Math.floor(Math.random() * charTable.length)];
@@ -686,21 +694,23 @@ export const getFirebaseAuthUserEmailVerified = async (
   id: string
 ): Promise<boolean> =>
   (await initializedAdmin.auth().getUser(id)).emailVerified;
-/* ==========================================
-            Firebase Client Auth 
-   ==========================================
-*/
+/*
+ * ==========================================
+ *          Firebase Client Auth
+ * ==========================================
+ */
 export const createCustomToken = async (uid: string): Promise<string> =>
   await initializedAdmin.auth().createCustomToken(uid);
-/* ==========================================
-            Firebase Cloud Storage
-   ==========================================
-*/
+/*
+ * ==========================================
+ *          Firebase Cloud Storage
+ * ==========================================
+ */
 /**
  * Firebase Cloud Storageで新しくファイルを作成する
  */
 export const saveFileToCloudStorage = async (
-  data: ArrayBuffer,
+  data: Uint8Array,
   mimeType: string
 ): Promise<string> => {
   const id = createRandomFileId();
@@ -778,8 +788,7 @@ export const generateAndWriteLineLogInState = async (): Promise<string> =>
  */
 export const generateAndWriteLineNotifyState = async (
   userId: string
-): Promise<string> =>
-  (await lineNotifyStateCollection.add({ userId: userId })).id;
+): Promise<string> => (await lineNotifyStateCollection.add({ userId })).id;
 
 /**
  * LINEへのstateが存在することを確認し、存在するなら削除する

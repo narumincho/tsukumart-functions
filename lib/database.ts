@@ -1,8 +1,8 @@
-import * as jwt from "jsonwebtoken";
 import * as databaseLow from "./databaseLow";
+import * as jwt from "jsonwebtoken";
 import * as key from "./key";
-import * as type from "./type";
 import * as lineNotify from "./lineNotify";
+import * as type from "./type";
 import { firestore } from "firebase-admin";
 
 /**
@@ -10,7 +10,7 @@ import { firestore } from "firebase-admin";
  * @param state state
  * @param service サービス
  */
-export const checkExistsLogInState = async (
+export const checkExistsLogInState = (
   state: string,
   service: "line"
 ): Promise<boolean> => {
@@ -25,7 +25,7 @@ export const checkExistsLogInState = async (
  * 指定したstateがつくマートが発行したものかどうか調べ、あったらそのstateを削除する
  * @param state
  */
-export const checkExistsLineNotifyState = async (
+export const checkExistsLineNotifyState = (
   state: string
 ): Promise<string | null> =>
   databaseLow.existsLineNotifyStateAndDeleteAndGetUserId(state);
@@ -34,16 +34,16 @@ export const checkExistsLineNotifyState = async (
  * LINEへの OpenId ConnectのStateを生成して保存する
  * リプレイアタックを防いだり、他のサーバーがつくマートのクライアントIDを使って発行しても自分が発行したものと見比べて識別できるようにする
  */
-export const generateAndWriteLineLogInState = async (): Promise<string> =>
-  await databaseLow.generateAndWriteLineLogInState();
+export const generateAndWriteLineLogInState = (): Promise<string> =>
+  databaseLow.generateAndWriteLineLogInState();
 
 /**
  * LINE Notifyの、CSRF攻撃に対応するためのトークンを生成して保存する
  * リプレイアタックを防いだり、他のサーバーがつくマートのクライアントIDを使って発行しても自分が発行したものと見比べて識別できるようにする
  */
-export const generateAndWriteLineNotifyState = async (
+export const generateAndWriteLineNotifyState = (
   userId: string
-): Promise<string> => await databaseLow.generateAndWriteLineNotifyState(userId);
+): Promise<string> => databaseLow.generateAndWriteLineNotifyState(userId);
 
 /**
  * ユーザー情報を入力する前のユーザーを保存する
@@ -58,7 +58,7 @@ export const addUserInUserBeforeInputData = async (
 ): Promise<void> => {
   await databaseLow.addUserBeforeInputData(logInServiceAndId, {
     name,
-    imageId: imageId,
+    imageId,
     createdAt: databaseLow.getNowTimestamp(),
   });
 };
@@ -96,14 +96,14 @@ export const addUserBeforeEmailVerification = async (
   const flatUniversity = type.universityToInternal(university);
   await databaseLow.addUserBeforeEmailVerification(logInAccountServiceId, {
     firebaseAuthUserId: uid,
-    name: name,
-    imageId: imageId,
+    name,
+    imageId,
     schoolAndDepartment: flatUniversity.schoolAndDepartment,
     graduate: flatUniversity.graduate,
-    email: email,
+    email,
     createdAt: databaseLow.getNowTimestamp(),
   });
-  return await databaseLow.createCustomToken(uid);
+  return databaseLow.createCustomToken(uid);
 };
 
 /**
@@ -167,11 +167,11 @@ export const getAccessTokenFromLogInAccountService = async (
 
       return createAccessToken(newUserId, randomStateForIsLastIssueId);
     }
-    console.log("メールで認証済みでない" + logInAccountServiceId);
+    console.log("メールで認証済みでない", logInAccountServiceId);
     throw new Error("email not verified");
   }
 
-  console.log("ユーザーが存在しなかった" + logInAccountServiceId);
+  console.log("ユーザーが存在しなかった", logInAccountServiceId);
   throw new Error("user dose not exists");
 };
 
@@ -207,7 +207,8 @@ const createAccessToken = (
 ): string => {
   const payload = {
     sub: userId,
-    jti: randomStateForIsLastIssue, // 最後に発行したものか調べる用
+    /** 最後に発行したものか調べる用 */
+    jti: randomStateForIsLastIssue,
   };
   /** アクセストークン */
   return jwt.sign(payload, key.accessTokenSecretKey, { algorithm: "HS256" });
@@ -217,16 +218,17 @@ const createRandomStateForIsLastIssueId = (): string => {
   let id = "";
   const charTable =
     "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 15; i += 1) {
     id += charTable[(Math.random() * charTable.length) | 0];
   }
   return id;
 };
 
-/* ==========================================
-                    User
-   ==========================================
-*/
+/*
+ * ==========================================
+ *                  User
+ * ==========================================
+ */
 export type UserReturnLowConst = Pick<
   type.UserPrivate,
   "id" | "displayName" | "imageId" | "introduction" | "university" | "createdAt"
@@ -246,7 +248,7 @@ export type UserReturnLowConst = Pick<
  */
 export const getUserData = async (id: string): Promise<UserReturnLowConst> =>
   databaseLowUserDataToUserDataLowCost({
-    id: id,
+    id,
     data: await databaseLow.getUserData(id),
     privateData: await databaseLow.getUserPrivateData(id),
   });
@@ -265,8 +267,8 @@ const databaseLowUserDataToUserDataLowCost = (rec: {
     schoolAndDepartment: rec.data.schoolAndDepartment,
   }),
   createdAt: databaseLow.timestampToDate(rec.data.createdAt),
-  soldProductAll: rec.data.soldProducts.map((id) => ({ id: id })),
-  boughtProductAll: rec.privateData.boughtProduct.map((id) => ({ id: id })),
+  soldProductAll: rec.data.soldProducts.map((id) => ({ id })),
+  boughtProductAll: rec.privateData.boughtProduct.map((id) => ({ id })),
   tradingAll: rec.privateData.trading.map((id) => ({ id })),
   tradedAll: rec.privateData.traded.map((id) => ({ id })),
   historyViewProduct: rec.privateData.historyViewProduct.map((id) => ({ id })),
@@ -415,8 +417,8 @@ export const addDraftProductData = async (
     data.images[0].mimeType
   );
   const imageIds = await Promise.all(
-    data.images.map(({ data, mimeType }) =>
-      databaseLow.saveFileToCloudStorage(data, mimeType)
+    data.images.map(({ data: imageBinary, mimeType }) =>
+      databaseLow.saveFileToCloudStorage(imageBinary, mimeType)
     )
   );
 
@@ -427,8 +429,8 @@ export const addDraftProductData = async (
       price: data.price,
       condition: data.condition,
       category: data.category,
-      thumbnailImageId: thumbnailImageId,
-      imageIds: imageIds,
+      thumbnailImageId,
+      imageIds,
       createdAt: nowTime,
       updateAt: nowTime,
     }),
@@ -437,8 +439,8 @@ export const addDraftProductData = async (
     description: data.description,
     condition: data.condition,
     category: data.category,
-    thumbnailImageId: thumbnailImageId,
-    imageIds: imageIds,
+    thumbnailImageId,
+    imageIds,
     createdAt: nowTimeAsDate,
     updateAt: nowTimeAsDate,
   };
@@ -518,9 +520,9 @@ const updateProductImage = async (
   imageIds: Array<string>;
 }> => {
   const newImageIds: Array<string> = [];
-  let restFirstImage: boolean = true;
+  let restFirstImage = true;
   let deleteAtIndex = 0;
-  for (let i = 0; i < beforeImageId.length; i++) {
+  for (let i = 0; i < beforeImageId.length; i += 1) {
     if (i === deleteImagesAt[deleteAtIndex]) {
       if (i === 0) {
         restFirstImage = false;
@@ -550,7 +552,7 @@ const updateProductImage = async (
     };
   }
   return {
-    thumbnailImageId: thumbnailImageId,
+    thumbnailImageId,
     imageIds: newImageIds,
   };
 };
@@ -588,16 +590,16 @@ export const setProfile = async (
     );
     databaseLow.updateUserData(id, {
       displayName: data.displayName,
-      imageId: imageId,
+      imageId,
       introduction: data.introduction,
       graduate: universityInternal.graduate,
       schoolAndDepartment: universityInternal.schoolAndDepartment,
     });
   }
   return {
-    id: id,
+    id,
     displayName: data.displayName,
-    imageId: imageId,
+    imageId,
     introduction: data.introduction,
     university: data.university,
   };
@@ -612,10 +614,11 @@ export const deleteImage = async (imageId: string): Promise<void> => {
   await databaseLow.deleteStorageFile(imageId);
 };
 
-/* ==========================================
-                    Product
-   ==========================================
-*/
+/*
+ * ==========================================
+ *                  Product
+ * ==========================================
+ */
 type ProductReturnLowCost = Pick<
   type.Product,
   | "id"
@@ -642,7 +645,7 @@ const productReturnLowCostFromDatabaseLow = ({
   id: string;
   data: databaseLow.ProductData;
 }): ProductReturnLowCost => ({
-  id: id,
+  id,
   name: data.name,
   price: data.price,
   description: data.description,
@@ -692,7 +695,7 @@ export const getFreeProducts = async (): Promise<Array<ProductReturnLowCost>> =>
  */
 export const getProduct = async (id: string): Promise<ProductReturnLowCost> =>
   productReturnLowCostFromDatabaseLow({
-    id: id,
+    id,
     data: await databaseLow.getProduct(id),
   });
 
@@ -887,7 +890,7 @@ export const sellProduct = async (
     description: data.description,
     condition: data.condition,
     category: data.category,
-    thumbnailImageId: thumbnailImageId,
+    thumbnailImageId,
     imageIds: imagesIds,
     likedCount: 0,
     viewedCount: 0,
@@ -908,7 +911,7 @@ export const sellProduct = async (
     description: data.description,
     condition: data.condition,
     category: data.category,
-    thumbnailImageId: thumbnailImageId,
+    thumbnailImageId,
     imageIds: imagesIds,
     createdAt: databaseLow.timestampToDate(nowTimestamp),
     updateAt: databaseLow.timestampToDate(nowTimestamp),
@@ -984,7 +987,6 @@ export const likeProduct = async (
   await databaseLow.addLikedProductData(userId, productId, {
     createdAt: databaseLow.getNowTimestamp(),
   });
-  return;
 };
 
 export const unlikeProduct = async (
@@ -1001,10 +1003,11 @@ export const unlikeProduct = async (
   await databaseLow.deleteLikedProductData(userId, productId);
 };
 
-/* ==========================================
-                    Trade
-   ==========================================
-*/
+/*
+ * ==========================================
+ *                  Trade
+ * ==========================================
+ */
 type TradeLowCost = Pick<
   type.Trade,
   "id" | "createdAt" | "updateAt" | "status"
@@ -1016,7 +1019,7 @@ type TradeLowCost = Pick<
 export const getTrade = async (id: string): Promise<TradeLowCost> => {
   const data = await databaseLow.getTradeData(id);
   return {
-    id: id,
+    id,
     product: {
       id: data.productId,
     },
@@ -1047,7 +1050,7 @@ const tradeReturnLowCostFromDatabaseLow = ({
   data: databaseLow.Trade;
 }): TradeLowCost => {
   return {
-    id: id,
+    id,
     product: {
       id: data.productId,
     },
@@ -1070,7 +1073,7 @@ export const addTradeComment = async (
   const productData = await databaseLow.getProduct(tradeData.productId);
   if (tradeData.buyerUserId === userId) {
     await databaseLow.addTradeComment(tradeId, {
-      body: body,
+      body,
       createdAt: nowTime,
       speaker: "buyer",
     });
@@ -1097,7 +1100,7 @@ export const addTradeComment = async (
 
   if (productData.sellerId === userId) {
     await databaseLow.addTradeComment(tradeId, {
-      body: body,
+      body,
       createdAt: nowTime,
       speaker: "seller",
     });
@@ -1129,8 +1132,8 @@ export const startTrade = async (
 ): Promise<TradeLowCost> => {
   const nowTime = databaseLow.getNowTimestamp();
   const tradeId = await databaseLow.startTrade({
-    buyerUserId: buyerUserId,
-    productId: productId,
+    buyerUserId,
+    productId,
     status: "inProgress",
     createdAt: nowTime,
     updateAt: nowTime,
@@ -1179,7 +1182,7 @@ export const cancelTrade = async (
 ): Promise<TradeLowCost> => {
   const nowTime = databaseLow.getNowTimestamp();
   const tradeData = await databaseLow.getTradeData(tradeId);
-  let status: type.TradeStatus | undefined = undefined;
+  let status: type.TradeStatus | undefined;
   const productData = await databaseLow.getProduct(tradeData.productId);
   const sellerPrivate = await databaseLow.getUserPrivateData(
     productData.sellerId
@@ -1216,7 +1219,7 @@ export const cancelTrade = async (
   }
   await databaseLow.updateTradeData(tradeId, {
     updateAt: nowTime,
-    status: status,
+    status,
   });
   const buyerData = await databaseLow.getUserPrivateData(tradeData.buyerUserId);
   await databaseLow.updateUserPrivateData(tradeData.buyerUserId, {
@@ -1235,7 +1238,7 @@ export const cancelTrade = async (
   });
   return tradeReturnLowCostFromDatabaseLow({
     id: tradeId,
-    data: { ...tradeData, updateAt: nowTime, status: status },
+    data: { ...tradeData, updateAt: nowTime, status },
   });
 };
 
