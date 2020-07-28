@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "commonjs",
+    "lib": ["es2019"],
+    "strict": true,
+    "moduleResolution": "node",
+    "noErrorTruncation": true,
+    "removeComments": true,
+    "newLine": "LF",
+    "outDir": "../distribution"
+  },
+  "include": ["index.ts"]
+}
