@@ -1,7 +1,7 @@
 import * as g from "graphql";
 import * as type from "./type";
 import { URL } from "url";
-import * as UtilUrl from "./util/url";
+import * as UtilUrl from "./url";
 import * as key from "./key";
 import * as database from "./database";
 import * as jwt from "jsonwebtoken";

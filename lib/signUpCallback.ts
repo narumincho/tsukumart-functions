@@ -5,7 +5,7 @@ import { URL, URLSearchParams } from "url";
 import * as database from "./database";
 import * as key from "./key";
 import * as type from "./type";
-import * as utilUrl from "./util/url";
+import * as utilUrl from "./url";
 
 const domain = "tsukumart.com";
 /**
