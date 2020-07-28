@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions";
-import * as graphqlExpress from "express-graphql";
+import { graphqlHTTP } from "express-graphql";
 import * as database from "./lib/database";
 import * as databaseLow from "./lib/databaseLow";
 import * as signUpCallback from "./lib/signUpCallback";
@@ -111,7 +111,7 @@ export const api = functions
       response.status(200).send("");
       return;
     }
-    await graphqlExpress({ schema: libSchema.schema, graphiql: true })(
+    await graphqlHTTP({ schema: libSchema.schema, graphiql: true })(
       request,
       response
     );
