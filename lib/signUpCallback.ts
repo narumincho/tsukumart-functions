@@ -1,11 +1,11 @@
-import axios, { AxiosResponse } from "axios";
+import * as database from "./database";
 import * as express from "express";
 import * as jwt from "jsonwebtoken";
-import { URL, URLSearchParams } from "url";
-import * as database from "./database";
 import * as key from "./key";
 import * as type from "./type";
 import * as utilUrl from "./url";
+import { URL, URLSearchParams } from "url";
+import axios, { AxiosResponse } from "axios";
 
 const domain = "tsukumart.com";
 /**
@@ -44,7 +44,8 @@ const signUpUrl = (
  */
 const createSendEmailToken = (id: type.LogInServiceAndId) => {
   const time = new Date();
-  time.setUTCMinutes(time.getUTCMinutes() + 30); // 有効期限は30分後
+  // 有効期限は30分後
+  time.setUTCMinutes(time.getUTCMinutes() + 30);
   const payload = {
     sub: type.logInServiceAndIdToString(id),
     exp: Math.round(time.getTime() / 1000),
@@ -57,7 +58,7 @@ const getAndSaveUserImage = async (imageId: URL): Promise<string> => {
     responseType: "arraybuffer",
   });
   const mimeType: string = response.headers["content-type"];
-  return await database.saveImage(response.data, mimeType);
+  return database.saveImage(response.data, mimeType);
 };
 
 /*

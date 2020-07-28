@@ -29,13 +29,18 @@ const dataUrlTypeConfig: g.GraphQLScalarTypeConfig<DataURL, string> = {
   serialize: (value: DataURL): string =>
     "data:" + value.mimeType + ";base64," + value.data.toString(),
   parseValue: (value: string): DataURL => {
-    const imageDataUrlMimeType = value.match(/^data:(.+);base64,(.+)$/);
-    if (imageDataUrlMimeType === null) {
+    const imageDataUrlMimeType = value.match(
+      /^data:(?<mimeType>.+);base64,(?<data>.+)$/u
+    );
+    if (
+      imageDataUrlMimeType === null ||
+      imageDataUrlMimeType.groups === undefined
+    ) {
       throw new Error("invalid DataURL");
     }
     return {
-      mimeType: imageDataUrlMimeType[1],
-      data: Buffer.from(imageDataUrlMimeType[2], "base64"),
+      mimeType: imageDataUrlMimeType.groups.mimeType,
+      data: Buffer.from(imageDataUrlMimeType.groups.data, "base64"),
     };
   },
 };
@@ -55,7 +60,7 @@ const dateTimeTypeConfig: g.GraphQLScalarTypeConfig<Date, number> = {
   parseLiteral: (ast) => {
     if (ast.kind === "FloatValue" || ast.kind === "IntValue") {
       try {
-        return new Date(Number.parseInt(ast.value));
+        return new Date(Number.parseInt(ast.value, 10));
       } catch {
         return null;
       }
@@ -847,22 +852,23 @@ export type LogInServiceAndId = {
 
 export const logInServiceAndIdToString = (
   logInAccountServiceId: LogInServiceAndId
-) => logInAccountServiceId.service + "_" + logInAccountServiceId.serviceId;
+): string =>
+  logInAccountServiceId.service + "_" + logInAccountServiceId.serviceId;
 
 export const logInServiceAndIdFromString = (
   string: string
 ): LogInServiceAndId => {
-  const result = string.match(/^(.+?)_(.+)$/);
-  if (result === null) {
+  const result = string.match(/^(?<service>.+?)_(?<serviceId>.+)$/u);
+  if (result === null || result.groups === undefined) {
     throw new Error("logInAccountServiceId is invalid");
   }
-  const service = checkAccountServiceValues(result[1]);
+  const service = checkAccountServiceValues(result.groups.service);
   if (service === null) {
-    throw new Error("logInAccount is invalid" + result[1]);
+    throw new Error("logInAccount is invalid" + result.groups.service);
   }
   return {
     service,
-    serviceId: result[2],
+    serviceId: result.groups.serviceId,
   };
 };
 

@@ -1,8 +1,8 @@
-import * as express from "express";
 import * as database from "./database";
+import * as express from "express";
+import * as key from "./key";
 import axios, { AxiosResponse } from "axios";
 import { URLSearchParams } from "url";
-import * as key from "./key";
 
 export const callBack = async (
   request: express.Request,

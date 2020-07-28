@@ -1,8 +1,8 @@
-import * as type from "./type";
-import * as firestore from "@google-cloud/firestore";
 import * as admin from "firebase-admin";
+import * as firestore from "@google-cloud/firestore";
 import * as jimp from "jimp";
 import * as stream from "stream";
+import * as type from "./type";
 
 const initializedAdmin = admin.initializeApp();
 const dataBase = initializedAdmin.firestore();
@@ -486,26 +486,6 @@ export const getFreeProductData = async (): Promise<
   (await querySnapshotToIdAndDataArray(
     await getProductsCondition("price", "==", 0)
   )) as Array<{ id: string; data: ProductData }>;
-/**
- * 商品の条件を指定して、指定した順番で取得する。複合クエリの指定が事前に必要
- * @param fieldName
- * @param operator
- * @param value
- */
-const getProductsConditionOrderBy = async <
-  WhereField extends keyof ProductData,
-  OrderByField extends keyof ProductData
->(
-  fieldName: WhereField,
-  operator: firestore.WhereFilterOp,
-  value: ProductData[WhereField],
-  orderByField: OrderByField,
-  directionStr: firestore.OrderByDirection
-): Promise<firestore.QuerySnapshot> =>
-  await productCollectionRef
-    .where(fieldName, operator, value)
-    .orderBy(orderByField, directionStr)
-    .get();
 
 /**
  * 商品の条件を指定して取得する
@@ -513,21 +493,21 @@ const getProductsConditionOrderBy = async <
  * @param operator
  * @param value
  */
-const getProductsCondition = async <WhereField extends keyof ProductData>(
+const getProductsCondition = <WhereField extends keyof ProductData>(
   fieldName: WhereField,
   operator: firestore.WhereFilterOp,
   value: ProductData[WhereField]
 ): Promise<firestore.QuerySnapshot> =>
-  await productCollectionRef.where(fieldName, operator, value).get();
+  productCollectionRef.where(fieldName, operator, value).get();
 
 /**
  * すべての商品を指定した順番で取得する
  */
-const getProductsOrderBy = async <Field extends keyof ProductData>(
+const getProductsOrderBy = <Field extends keyof ProductData>(
   field: Field,
   directionStr: firestore.OrderByDirection
 ): Promise<firestore.QuerySnapshot> =>
-  await productCollectionRef.orderBy(field, directionStr).get();
+  productCollectionRef.orderBy(field, directionStr).get();
 
 type ProductComment = {
   body: string;
@@ -684,7 +664,7 @@ const createRandomPassword = (): string => {
   let id = "";
   const charTable =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  for (let i = 0; i < 32; i++) {
+  for (let i = 0; i < 32; i += 1) {
     id += charTable[Math.floor(Math.random() * charTable.length)];
   }
   return id;
@@ -699,8 +679,8 @@ export const getFirebaseAuthUserEmailVerified = async (
  *          Firebase Client Auth
  * ==========================================
  */
-export const createCustomToken = async (uid: string): Promise<string> =>
-  await initializedAdmin.auth().createCustomToken(uid);
+export const createCustomToken = (uid: string): Promise<string> =>
+  initializedAdmin.auth().createCustomToken(uid);
 /*
  * ==========================================
  *          Firebase Cloud Storage
@@ -753,7 +733,7 @@ export const saveThumbnailImageFromCloudStorageToCloudStorage = async (
 const createRandomFileId = (): string => {
   let id = "";
   const chars = "0123456789abcdefghijklmnopqrstuvwxyz";
-  for (let i = 0; i < 22; i++) {
+  for (let i = 0; i < 22; i += 1) {
     id += chars[Math.floor(Math.random() * chars.length)];
   }
   return id;

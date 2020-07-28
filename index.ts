@@ -1,12 +1,12 @@
-import * as functions from "firebase-functions";
-import { graphqlHTTP } from "express-graphql";
 import * as database from "./lib/database";
 import * as databaseLow from "./lib/databaseLow";
-import * as signUpCallback from "./lib/signUpCallback";
-import * as lineNotify from "./lib/lineNotify";
-import * as libSchema from "./lib/schema";
+import * as functions from "firebase-functions";
 import * as html from "@narumincho/html";
+import * as libSchema from "./lib/schema";
+import * as lineNotify from "./lib/lineNotify";
+import * as signUpCallback from "./lib/signUpCallback";
 import { URL } from "url";
+import { graphqlHTTP } from "express-graphql";
 
 console.log("サーバーのプログラムが読み込まれた!");
 
@@ -64,9 +64,9 @@ const pathToDescriptionAndImageUrl = async (
   description: string;
   imageUrl: URL;
 }> => {
-  const productMathResult = path.match(/^\/product\/(\w+)$/);
-  if (productMathResult !== null) {
-    const product = await database.getProduct(productMathResult[1]);
+  const productMathResult = path.match(/^\/product\/(?<id>\w+)$/u);
+  if (productMathResult !== null && productMathResult.groups !== undefined) {
+    const product = await database.getProduct(productMathResult.groups.id);
     return {
       title: product.name,
       description: `${product.name} | ${product.description}`,
@@ -76,9 +76,9 @@ const pathToDescriptionAndImageUrl = async (
       ),
     };
   }
-  const userMathResult = path.match(/^\/user\/(\w+)$/);
-  if (userMathResult !== null) {
-    const user = await database.getUserData(userMathResult[1]);
+  const userMathResult = path.match(/^\/user\/(?<id>\w+)$/u);
+  if (userMathResult !== null && userMathResult.groups !== undefined) {
+    const user = await database.getUserData(userMathResult.groups.id);
     return {
       title: user.displayName,
       description: `${user.displayName}さんのプロフィール | ${user.introduction}`,
@@ -152,7 +152,7 @@ export const notifyCallBack = functions
  */
 export const image = functions
   .region("asia-northeast1")
-  .https.onRequest(async (request, response) => {
+  .https.onRequest((request, response) => {
     response.setHeader("access-control-allow-origin", "https://tsukumart.com");
     response.setHeader("vary", "Origin");
     if (request.method === "OPTIONS") {
@@ -164,7 +164,8 @@ export const image = functions
     try {
       response.setHeader("cache-control", "public, max-age=31536000");
       databaseLow
-        .getImageReadStream(request.path.substring(1)) // /imageId -> imageId
+        // /imageId -> imageId
+        .getImageReadStream(request.path.substring(1))
         .pipe(response);
     } catch (e) {
       console.log(`指定した、ファイルID=(${request.path.substring(1)})がない`);

@@ -1,10 +1,10 @@
+import * as UtilUrl from "./url";
+import * as database from "./database";
 import * as g from "graphql";
+import * as jwt from "jsonwebtoken";
+import * as key from "./key";
 import * as type from "./type";
 import { URL } from "url";
-import * as UtilUrl from "./url";
-import * as key from "./key";
-import * as database from "./database";
-import * as jwt from "jsonwebtoken";
 
 const makeObjectFieldMap = <Type extends { [k in string]: unknown }>(
   args: Type extends { id: string }
@@ -26,7 +26,8 @@ const makeObjectFieldMap = <Type extends { [k in string]: unknown }>(
 
 type GraphQLFieldConfigWithArgs<
   Type extends { [k in string]: unknown },
-  Key extends keyof Type // この型変数は型推論に使われる
+  /** この型変数は型推論に使われる */
+  Key extends keyof Type
 > = {
   type: g.GraphQLOutputType;
   args: any;
@@ -38,7 +39,8 @@ type GraphQLFieldConfigWithArgs<
 const makeObjectField = <
   Type extends { [k in string]: unknown } & { id: string },
   Key extends keyof Type,
-  T extends { [k in string]: unknown } // for allがあればなぁ
+  // for allがあればなぁ
+  T extends { [k in string]: unknown }
 >(args: {
   type: g.GraphQLOutputType;
   args: { [k in keyof T]: { type: g.GraphQLInputType } };
@@ -125,7 +127,7 @@ const productGraphQLType: g.GraphQLObjectType<
       name: makeObjectField({
         type: g.GraphQLNonNull(g.GraphQLString),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.name === undefined) {
             return (await setProductData(source)).name;
           }
@@ -136,7 +138,7 @@ const productGraphQLType: g.GraphQLObjectType<
       price: makeObjectField({
         type: g.GraphQLNonNull(g.GraphQLInt),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.price === undefined) {
             return (await setProductData(source)).price;
           }
@@ -147,7 +149,7 @@ const productGraphQLType: g.GraphQLObjectType<
       description: makeObjectField({
         type: g.GraphQLNonNull(g.GraphQLString),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.description === undefined) {
             return (await setProductData(source)).description;
           }
@@ -158,7 +160,7 @@ const productGraphQLType: g.GraphQLObjectType<
       condition: makeObjectField({
         type: type.conditionGraphQLType,
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.condition === undefined) {
             return (await setProductData(source)).condition;
           }
@@ -169,7 +171,7 @@ const productGraphQLType: g.GraphQLObjectType<
       category: makeObjectField({
         type: g.GraphQLNonNull(type.categoryGraphQLType),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.category === undefined) {
             return (await setProductData(source)).category;
           }
@@ -180,7 +182,7 @@ const productGraphQLType: g.GraphQLObjectType<
       thumbnailImageId: makeObjectField({
         type: g.GraphQLNonNull(g.GraphQLString),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.thumbnailImageId === undefined) {
             return (await setProductData(source)).thumbnailImageId;
           }
@@ -193,7 +195,7 @@ const productGraphQLType: g.GraphQLObjectType<
           g.GraphQLList(g.GraphQLNonNull(g.GraphQLString))
         ),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.imageIds === undefined) {
             return (await setProductData(source)).imageIds;
           }
@@ -204,7 +206,7 @@ const productGraphQLType: g.GraphQLObjectType<
       likedCount: makeObjectField({
         type: g.GraphQLNonNull(g.GraphQLInt),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.likedCount === undefined) {
             return (await setProductData(source)).likedCount;
           }
@@ -215,7 +217,7 @@ const productGraphQLType: g.GraphQLObjectType<
       viewedCount: makeObjectField({
         type: g.GraphQLNonNull(g.GraphQLInt),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.viewedCount === undefined) {
             return (await setProductData(source)).viewedCount;
           }
@@ -226,7 +228,7 @@ const productGraphQLType: g.GraphQLObjectType<
       seller: makeObjectField({
         type: g.GraphQLNonNull(userGraphQLType),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.seller === undefined) {
             return (await setProductData(source)).seller;
           }
@@ -239,7 +241,7 @@ const productGraphQLType: g.GraphQLObjectType<
           g.GraphQLList(g.GraphQLNonNull(productCommentGraphQLType))
         ),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.comments === undefined) {
             const comments = await database.getProductComments(source.id);
             source.comments = comments;
@@ -252,7 +254,7 @@ const productGraphQLType: g.GraphQLObjectType<
       status: makeObjectField({
         type: g.GraphQLNonNull(type.productStatusGraphQLType),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.status === undefined) {
             return (await setProductData(source)).status;
           }
@@ -263,7 +265,7 @@ const productGraphQLType: g.GraphQLObjectType<
       createdAt: makeObjectField({
         type: g.GraphQLNonNull(type.dateTimeGraphQLType),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.createdAt === undefined) {
             return (await setProductData(source)).createdAt;
           }
@@ -274,7 +276,7 @@ const productGraphQLType: g.GraphQLObjectType<
       updateAt: makeObjectField({
         type: g.GraphQLNonNull(type.dateTimeGraphQLType),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.updateAt === undefined) {
             return (await setProductData(source)).updateAt;
           }
@@ -401,7 +403,7 @@ const userGraphQLType = new g.GraphQLObjectType({
       displayName: makeObjectField({
         type: g.GraphQLNonNull(g.GraphQLString),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.displayName === undefined) {
             return (await setUserData(source)).displayName;
           }
@@ -412,7 +414,7 @@ const userGraphQLType = new g.GraphQLObjectType({
       imageId: makeObjectField({
         type: g.GraphQLNonNull(type.urlGraphQLType),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.imageId === undefined) {
             return (await setUserData(source)).imageId;
           }
@@ -424,7 +426,7 @@ const userGraphQLType = new g.GraphQLObjectType({
         type: g.GraphQLNonNull(g.GraphQLString),
         args: {},
         description: "紹介文",
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.introduction === undefined) {
             return (await setUserData(source)).introduction;
           }
@@ -435,7 +437,7 @@ const userGraphQLType = new g.GraphQLObjectType({
         type: g.GraphQLNonNull(type.universityGraphQLObjectType),
         args: {},
         description: "所属",
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.university === undefined) {
             return type.universityToInternal(
               (await setUserData(source)).university
@@ -447,7 +449,7 @@ const userGraphQLType = new g.GraphQLObjectType({
       createdAt: makeObjectField({
         type: g.GraphQLNonNull(type.dateTimeGraphQLType),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.createdAt === undefined) {
             return (await setUserData(source)).createdAt;
           }
@@ -460,7 +462,7 @@ const userGraphQLType = new g.GraphQLObjectType({
           g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.soldProductAll === undefined) {
             return (await setUserData(source)).soldProductAll;
           }
@@ -507,7 +509,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
       displayName: makeObjectField({
         type: g.GraphQLNonNull(g.GraphQLString),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.displayName === undefined) {
             return (await setUserPrivateData(source)).displayName;
           }
@@ -518,7 +520,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
       imageId: makeObjectField({
         type: g.GraphQLNonNull(g.GraphQLString),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.imageId === undefined) {
             return (await setUserPrivateData(source)).imageId;
           }
@@ -530,7 +532,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
       introduction: makeObjectField({
         type: g.GraphQLNonNull(g.GraphQLString),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.introduction === undefined) {
             return (await setUserPrivateData(source)).introduction;
           }
@@ -541,7 +543,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
       university: makeObjectField({
         type: g.GraphQLNonNull(type.universityGraphQLObjectType),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.university === undefined) {
             return type.universityToInternal(
               (await setUserPrivateData(source)).university
@@ -554,7 +556,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
       createdAt: makeObjectField({
         type: g.GraphQLNonNull(type.dateTimeGraphQLType),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.createdAt === undefined) {
             return (await setUserPrivateData(source)).createdAt;
           }
@@ -567,7 +569,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
           g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.soldProductAll === undefined) {
             return (await setUserPrivateData(source)).soldProductAll;
           }
@@ -580,7 +582,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
           g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.boughtProductAll === undefined) {
             return (await setUserPrivateData(source)).boughtProductAll;
           }
@@ -593,7 +595,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
           g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.likedProductAll === undefined) {
             return (await setUserPrivateData(source)).likedProduct;
           }
@@ -610,7 +612,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
           g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.historyViewProductAll === undefined) {
             return (await setUserData(source)).historyViewProduct;
           }
@@ -623,7 +625,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
           g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.commentedProductAll === undefined) {
             return (await setUserData(source)).commentedProduct;
           }
@@ -636,7 +638,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
           g.GraphQLList(g.GraphQLNonNull(draftProductGraphQLType))
         ),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.draftProducts === undefined) {
             const draftProducts = await database.getDraftProducts(source.id);
             source.draftProducts = draftProducts;
@@ -651,7 +653,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
           g.GraphQLList(g.GraphQLNonNull(tradeGraphQLType))
         ),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.tradingAll === undefined) {
             return (await setUserPrivateData(source)).tradingAll;
           }
@@ -664,7 +666,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
           g.GraphQLList(g.GraphQLNonNull(tradeGraphQLType))
         ),
         args: {},
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.tradedAll === undefined) {
             return (await setUserPrivateData(source)).tradedAll;
           }
@@ -704,7 +706,7 @@ const tradeGraphQLType = new g.GraphQLObjectType({
         type: g.GraphQLNonNull(productGraphQLType),
         args: {},
         description: "取引中の商品",
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.product === undefined) {
             return (await setTradeData(source)).product;
           }
@@ -715,7 +717,7 @@ const tradeGraphQLType = new g.GraphQLObjectType({
         type: g.GraphQLNonNull(userGraphQLType),
         args: {},
         description: "商品を買いたい人",
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.buyer === undefined) {
             return (await setTradeData(source)).buyer;
           }
@@ -728,7 +730,7 @@ const tradeGraphQLType = new g.GraphQLObjectType({
         ),
         args: {},
         description: "コメント",
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.comment === undefined) {
             const comments = await database.getTradeComments(source.id);
             source.comment = comments;
@@ -741,7 +743,7 @@ const tradeGraphQLType = new g.GraphQLObjectType({
         type: g.GraphQLNonNull(type.dateTimeGraphQLType),
         args: {},
         description: "取引開始日時",
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.createdAt === undefined) {
             return (await setTradeData(source)).createdAt;
           }
@@ -752,7 +754,7 @@ const tradeGraphQLType = new g.GraphQLObjectType({
         type: g.GraphQLNonNull(type.dateTimeGraphQLType),
         args: {},
         description: "更新日時",
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.updateAt === undefined) {
             return (await setTradeData(source)).updateAt;
           }
@@ -763,7 +765,7 @@ const tradeGraphQLType = new g.GraphQLObjectType({
         type: g.GraphQLNonNull(type.TradeStatusGraphQLType),
         args: {},
         description: type.tradeStatusDescription,
-        resolve: async (source, args, context, info) => {
+        resolve: async (source) => {
           if (source.status === undefined) {
             return (await setTradeData(source)).status;
           }
@@ -808,11 +810,11 @@ const tradeCommentGraphQLType = new g.GraphQLObjectType({
  *  =============================================================
  */
 
-const hello = makeQueryOrMutationField<{}, string>({
+const hello = makeQueryOrMutationField<Record<never, never>, string>({
   args: {},
   type: g.GraphQLNonNull(g.GraphQLString),
-  resolve: async () => {
-    return "Hello World! I'm Tsuku Bird. 🐦";
+  resolve: (): Promise<string> => {
+    return Promise.resolve("Hello World! I'm Tsuku Bird. 🐦");
   },
   description: "世界に挨拶する",
 });
@@ -870,8 +872,7 @@ const product = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLNonNull(productGraphQLType),
-  resolve: async (source, args, context, info) =>
-    await database.getProduct(args.productId),
+  resolve: (source, args) => database.getProduct(args.productId),
   description: "商品の情報を取得する",
 });
 
@@ -922,8 +923,8 @@ const productSearch = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(productGraphQLType))),
-  resolve: async (source, args, context, info) => {
-    return await database.productSearch({
+  resolve: (source, args) => {
+    return database.productSearch({
       query: args.query,
       category: toCategoryCondition(args.category, args.categoryGroup),
       university: toUniversityCondition(
@@ -989,42 +990,43 @@ const toUniversityCondition = (
   return null;
 };
 
-const productAll = makeQueryOrMutationField<{}, Array<type.ProductInternal>>({
+const productAll = makeQueryOrMutationField<
+  Record<never, never>,
+  Array<type.ProductInternal>
+>({
   args: {},
   type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(productGraphQLType))),
-  resolve: async (source, args, context, info) =>
-    await database.getAllProducts(),
+  resolve: () => database.getAllProducts(),
   description: "すべての商品(売れたものも含まれる)を取得する",
 });
 
 const productRecentAll = makeQueryOrMutationField<
-  {},
+  Record<never, never>,
   Array<type.ProductInternal>
 >({
   args: {},
   type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(productGraphQLType))),
-  resolve: async (source, args, context, info) => database.getRecentProducts(),
+  resolve: () => database.getRecentProducts(),
   description: "すべての商品(売れたものを含む)を新着順に取得する",
 });
 
 const productRecommendAll = makeQueryOrMutationField<
-  {},
+  Record<never, never>,
   Array<type.ProductInternal>
 >({
   args: {},
   type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(productGraphQLType))),
-  resolve: async (source, args, context, info) =>
-    database.getRecommendProducts(),
+  resolve: () => database.getRecommendProducts(),
   description: "すべての商品(売れたものを含む)をいいねが多い順に取得する",
 });
 
 const productFreeAll = makeQueryOrMutationField<
-  {},
+  Record<never, never>,
   Array<type.ProductInternal>
 >({
   args: {},
   type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(productGraphQLType))),
-  resolve: async (source, args, context, info) => database.getFreeProducts(),
+  resolve: () => database.getFreeProducts(),
   description: "すべての0円の商品(売れたものも含まれる)を取得する",
 });
 
@@ -1043,7 +1045,7 @@ const trade = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLNonNull(tradeGraphQLType),
-  resolve: async (source, args, context, info) => {
+  resolve: async (source, args) => {
     const userId = await database.verifyAccessToken(args.accessToken);
     const userData = await database.getUserData(userId);
     if (
@@ -1061,8 +1063,8 @@ const includeTradeData = (
   id: string,
   trades: Array<{ id: string }>
 ): boolean => {
-  for (let i = 0; i < trades.length; i++) {
-    if (trades[i].id === id) {
+  for (const tradeItem of trades) {
+    if (tradeItem.id === id) {
       return true;
     }
   }
@@ -1118,7 +1120,7 @@ const getLineNotifyUrl = makeQueryOrMutationField<{ accessToken: string }, URL>(
         description: type.accessTokenDescription,
       },
     },
-    resolve: async (source, args, context, info) => {
+    resolve: async (source, args) => {
       return UtilUrl.fromStringWithQuery(
         "notify-bot.line.me/oauth/authorize",
         new Map([
@@ -1179,7 +1181,7 @@ const registerSignUpData = makeQueryOrMutationField<
     const universityUnsafe = args.university;
     const logInAccountServiceId = verifySendEmailToken(args.sendEmailToken);
     const tsukubaAcJpMathResult = args.email.match(
-      /s(\d{7})@[a-zA-Z0-9]+\.tsukuba\.ac\.jp/
+      /s\d{7}@[a-zA-Z0-9]+\.tsukuba\.ac\.jp/u
     );
     if (
       !(
@@ -1203,7 +1205,7 @@ const registerSignUpData = makeQueryOrMutationField<
 
     console.log(`画像のURLを取得 ${imageId}`);
     const university = type.universityFromInternal(universityUnsafe);
-    return await database.addUserBeforeEmailVerification(
+    return database.addUserBeforeEmailVerification(
       logInAccountServiceId,
       args.displayName,
       imageId,
@@ -1326,7 +1328,7 @@ const sellProduct = makeQueryOrMutationField<
   type: g.GraphQLNonNull(productGraphQLType),
   resolve: async (source, args) => {
     const userId = await database.verifyAccessToken(args.accessToken);
-    return await database.sellProduct(userId, {
+    return database.sellProduct(userId, {
       name: args.name,
       price: args.price,
       description: args.description,
@@ -1355,7 +1357,7 @@ const markProductInHistory = makeQueryOrMutationField<
   type: g.GraphQLNonNull(productGraphQLType),
   resolve: async (source, args) => {
     const userId = await database.verifyAccessToken(args.accessToken);
-    return await database.markProductInHistory(userId, args.productId);
+    return database.markProductInHistory(userId, args.productId);
   },
   description: "商品を閲覧したと記録する",
 });
@@ -1375,7 +1377,7 @@ const likeProduct = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLBoolean,
-  resolve: async (source, args, context, info) => {
+  resolve: async (source, args) => {
     await database.likeProduct(
       await database.verifyAccessToken(args.accessToken),
       args.productId
@@ -1400,7 +1402,7 @@ const unlikeProduct = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLBoolean,
-  resolve: async (source, args, context, info) => {
+  resolve: async (source, args) => {
     await database.unlikeProduct(
       await database.verifyAccessToken(args.accessToken),
       args.productId
@@ -1432,8 +1434,8 @@ const addProductComment = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLNonNull(productGraphQLType),
-  resolve: async (source, args, context, info) => {
-    return await database.addCommentProduct(
+  resolve: async (source, args) => {
+    return database.addCommentProduct(
       await database.verifyAccessToken(args.accessToken),
       args.productId,
       {
@@ -1497,8 +1499,8 @@ const updateProduct = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLNonNull(productGraphQLType),
-  resolve: async (source, args, context, info) => {
-    return await database.updateProduct(
+  resolve: async (source, args) => {
+    return database.updateProduct(
       await database.verifyAccessToken(args.accessToken),
       args.productId,
       {
@@ -1530,7 +1532,7 @@ const deleteProduct = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLBoolean,
-  resolve: async (source, args, context, info) => {
+  resolve: async (source, args) => {
     await database.deleteProduct(
       await database.verifyAccessToken(args.accessToken),
       args.productId
@@ -1580,8 +1582,8 @@ const addDraftProduct = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLNonNull(draftProductGraphQLType),
-  resolve: async (source, args, context, info) => {
-    return await database.addDraftProductData(
+  resolve: async (source, args) => {
+    return database.addDraftProductData(
       await database.verifyAccessToken(args.accessToken),
       {
         name: args.name,
@@ -1651,8 +1653,8 @@ const updateDraftProduct = makeQueryOrMutationField<
   type: g.GraphQLNonNull(
     g.GraphQLList(g.GraphQLNonNull(draftProductGraphQLType))
   ),
-  resolve: async (source, args, context, info) => {
-    return await database.updateDraftProduct(
+  resolve: async (source, args) => {
+    return database.updateDraftProduct(
       await database.verifyAccessToken(args.accessToken),
       {
         draftId: args.draftId,
@@ -1685,7 +1687,7 @@ const deleteDraftProduct = makeQueryOrMutationField<
   type: g.GraphQLNonNull(
     g.GraphQLList(g.GraphQLNonNull(draftProductGraphQLType))
   ),
-  resolve: async (source, args, context, info) => {
+  resolve: async (source, args) => {
     const userId = await database.verifyAccessToken(args.accessToken);
     await database.deleteDraftProduct(userId, args.draftId);
     return database.getDraftProducts(userId);
@@ -1708,16 +1710,16 @@ const startTrade = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLNonNull(tradeGraphQLType),
-  resolve: async (source, args, context, info) => {
+  resolve: async (source, args) => {
     const userId = await database.verifyAccessToken(args.accessToken);
-    const product = await database.getProduct(args.productId);
-    if (product.seller.id === userId) {
+    const productData = await database.getProduct(args.productId);
+    if (productData.seller.id === userId) {
       throw new Error("自分が出品した商品を買うことはできません");
     }
-    if (product.status !== "selling") {
+    if (productData.status !== "selling") {
       throw new Error("売り出し中以外の商品を買うことはできません");
     }
-    return await database.startTrade(userId, args.productId);
+    return database.startTrade(userId, args.productId);
   },
   description: "取引を開始する",
 });
@@ -1741,8 +1743,8 @@ const addTradeComment = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLNonNull(tradeGraphQLType),
-  resolve: async (source, args, context, info) => {
-    return await database.addTradeComment(
+  resolve: async (source, args) => {
+    return database.addTradeComment(
       await database.verifyAccessToken(args.accessToken),
       args.tradeId,
       args.body
@@ -1766,8 +1768,8 @@ const cancelTrade = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLNonNull(tradeGraphQLType),
-  resolve: async (source, args, context, info) => {
-    return await database.cancelTrade(
+  resolve: async (source, args) => {
+    return database.cancelTrade(
       await database.verifyAccessToken(args.accessToken),
       args.tradeId
     );
@@ -1790,8 +1792,8 @@ const finishTrade = makeQueryOrMutationField<
     },
   },
   type: g.GraphQLNonNull(tradeGraphQLType),
-  resolve: async (source, args, context, info) => {
-    return await database.finishTrade(
+  resolve: async (source, args) => {
+    return database.finishTrade(
       await database.verifyAccessToken(args.accessToken),
       args.tradeId
     );

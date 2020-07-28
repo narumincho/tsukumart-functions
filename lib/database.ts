@@ -519,7 +519,7 @@ const updateProductImage = async (
   thumbnailImageId: string;
   imageIds: Array<string>;
 }> => {
-  const newImageIds: Array<string> = [];
+  const newImagePromiseIds: Array<Promise<string>> = [];
   let restFirstImage = true;
   let deleteAtIndex = 0;
   for (let i = 0; i < beforeImageId.length; i += 1) {
@@ -529,31 +529,30 @@ const updateProductImage = async (
       }
       deleteAtIndex += 1;
     } else {
-      newImageIds.push(beforeImageId[i]);
+      newImagePromiseIds.push(Promise.resolve(beforeImageId[i]));
     }
   }
-  for (let i = 0; i < addImages.length; i++) {
-    newImageIds.push(
-      await databaseLow.saveFileToCloudStorage(
-        addImages[i].data,
-        addImages[i].mimeType
-      )
+  for (const image of addImages) {
+    newImagePromiseIds.push(
+      databaseLow.saveFileToCloudStorage(image.data, image.mimeType)
     );
   }
-  if (newImageIds.length <= 0) {
+
+  const imageIds: Array<string> = await Promise.all(newImagePromiseIds);
+  if (imageIds.length <= 0) {
     throw new Error("商品画像がなくなってしまった");
   }
   if (!restFirstImage) {
     return {
       thumbnailImageId: await databaseLow.saveThumbnailImageFromCloudStorageToCloudStorage(
-        newImageIds[0]
+        imageIds[0]
       ),
-      imageIds: newImageIds,
+      imageIds,
     };
   }
   return {
     thumbnailImageId,
-    imageIds: newImageIds,
+    imageIds,
   };
 };
 
@@ -605,10 +604,8 @@ export const setProfile = async (
   };
 };
 
-export const saveImage = async (
-  data: Buffer,
-  mimeType: string
-): Promise<string> => await databaseLow.saveFileToCloudStorage(data, mimeType);
+export const saveImage = (data: Buffer, mimeType: string): Promise<string> =>
+  databaseLow.saveFileToCloudStorage(data, mimeType);
 
 export const deleteImage = async (imageId: string): Promise<void> => {
   await databaseLow.deleteStorageFile(imageId);
@@ -736,9 +733,9 @@ export const productSearch = async (
     condition.university
   );
   const productsFilteredCategory =
-    condition.category !== null
-      ? filterProductsByCategoryCondition(condition.category, productDataList)
-      : productDataList;
+    condition.category === null
+      ? productDataList
+      : filterProductsByCategoryCondition(condition.category, productDataList);
 
   return productsFilteredCategory.filter(
     (product) =>
@@ -757,21 +754,23 @@ const getProductListFromUniversity = async (
       productReturnLowCostFromDatabaseLow
     );
   }
-  const productList: Array<ProductReturnLowCost> = [];
   const userList = await getUserListFromUniversityCondition(
     universityCondition
   );
+  const productPromiseList: Array<Promise<ProductReturnLowCost>> = [];
   for (const user of userList) {
     for (const product of user.soldProductAll) {
-      productList.push(
-        productReturnLowCostFromDatabaseLow({
-          id: product.id,
-          data: await databaseLow.getProduct(product.id),
-        })
+      productPromiseList.push(
+        (async (): Promise<ProductReturnLowCost> =>
+          productReturnLowCostFromDatabaseLow({
+            id: product.id,
+            data: await databaseLow.getProduct(product.id),
+          }))()
       );
     }
   }
-  return productList;
+
+  return Promise.all(productPromiseList);
 };
 
 const getUserListFromUniversityCondition = async (
@@ -832,11 +831,12 @@ const filterProductsByCategoryCondition = (
   switch (condition.c) {
     case "category":
       return products.filter((product) => product.category === condition.v);
-    case "group":
+    case "group": {
       const categoryList = type.categoryListFromGroup(condition.v);
       return products.filter((product) =>
         categoryList.includes(product.category)
       );
+    }
   }
 };
 
@@ -846,7 +846,7 @@ const filterProductsByCategoryCondition = (
  */
 const normalization = (text: string): string =>
   text
-    .replace(/[ァ-ン]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0x60))
+    .replace(/[ァ-ン]/gu, (s) => String.fromCharCode(s.charCodeAt(0) - 0x60))
     .toLowerCase();
 /**
  * 商品を出品する
@@ -879,8 +879,8 @@ export const sellProduct = async (
     data.images[0].mimeType
   );
   const imagesIds = await Promise.all(
-    data.images.map(({ data, mimeType }) =>
-      databaseLow.saveFileToCloudStorage(data, mimeType)
+    data.images.map(({ data: imageBinary, mimeType }) =>
+      databaseLow.saveFileToCloudStorage(imageBinary, mimeType)
     )
   );
   const nowTimestamp = databaseLow.getNowTimestamp();
@@ -960,14 +960,14 @@ export const createProductComment = async (
   });
   await databaseLow.updateProductData(productId, { updateAt: nowTimestamp });
   return (await databaseLow.getProductComments(productId)).map(
-    ({ id, data }) => ({
+    ({ id, data: product }) => ({
       commentId: id,
-      body: data.body,
-      createdAt: databaseLow.timestampToDate(data.createdAt),
+      body: product.body,
+      createdAt: databaseLow.timestampToDate(product.createdAt),
       speaker: {
-        id: data.speakerId,
-        displayName: data.speakerDisplayName,
-        imageId: data.speakerImageId,
+        id: product.speakerId,
+        displayName: product.speakerDisplayName,
+        imageId: product.speakerImageId,
       },
     })
   );
@@ -1035,8 +1035,8 @@ export const getTrade = async (id: string): Promise<TradeLowCost> => {
 export const getTradeComments = async (
   id: string
 ): Promise<Array<type.TradeComment>> =>
-  (await databaseLow.getTradeComments(id)).map(({ id, data }) => ({
-    commentId: id,
+  (await databaseLow.getTradeComments(id)).map(({ id: commentId, data }) => ({
+    commentId,
     body: data.body,
     speaker: data.speaker,
     createdAt: databaseLow.timestampToDate(data.createdAt),
@@ -1343,11 +1343,11 @@ export const finishTrade = async (userId: string, tradeId: string) => {
   throw new Error("購入者じゃない人が、取引を完了させようとした");
 };
 
-export const saveNotifyToken = async (
+export const saveNotifyToken = (
   userId: string,
   token: string
 ): Promise<void> => {
-  return await databaseLow.updateUserPrivateData(userId, {
+  return databaseLow.updateUserPrivateData(userId, {
     notifyToken: token,
   });
 };
