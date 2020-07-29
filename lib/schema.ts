@@ -1181,7 +1181,7 @@ const registerSignUpData = makeQueryOrMutationField<
     const universityUnsafe = args.university;
     const logInAccountServiceId = verifySendEmailToken(args.sendEmailToken);
     const tsukubaAcJpMathResult = args.email.match(
-      /s\d{7}@[a-zA-Z0-9]+\.tsukuba\.ac\.jp/u
+      /^s\d{7}@[a-zA-Z0-9]+\.tsukuba\.ac\.jp$/u
     );
     if (
       !(
