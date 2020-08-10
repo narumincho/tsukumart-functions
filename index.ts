@@ -1,16 +1,16 @@
 import * as database from "./lib/database";
 import * as databaseLow from "./lib/databaseLow";
 import * as functions from "firebase-functions";
-import * as html from "@narumincho/html";
 import * as libSchema from "./lib/schema";
 import * as lineNotify from "./lib/lineNotify";
+import * as nHtml from "@narumincho/html";
 import * as signUpCallback from "./lib/signUpCallback";
 import { URL } from "url";
 import { graphqlHTTP } from "express-graphql";
 
 console.log("サーバーのプログラムが読み込まれた!");
 
-export const indexHtml = functions
+export const html = functions
   .region("us-central1")
   .https.onRequest(async (request, response) => {
     if (request.hostname !== "tsukumart.com") {
@@ -22,7 +22,7 @@ export const indexHtml = functions
 
     response.setHeader("content-type", "text/html");
     response.send(
-      html.toString({
+      nHtml.toString({
         appName: "つくマート",
         pageName: descriptionAndImageUrl.title,
         iconPath: ["assets", "logo_bird.png"],
@@ -31,8 +31,8 @@ export const indexHtml = functions
         scriptUrlList: [new URL("https://tsukumart.com/call.js")],
         javaScriptMustBeAvailable: true,
         styleUrlList: [],
-        twitterCard: html.TwitterCard.SummaryCardWithLargeImage,
-        language: html.Language.Japanese,
+        twitterCard: nHtml.TwitterCard.SummaryCardWithLargeImage,
+        language: nHtml.Language.Japanese,
         manifestPath: ["manifest.json"],
         url: new URL("https://tsukumart.com/" + request.path),
         themeColor: "#733fa7",
@@ -44,7 +44,7 @@ export const indexHtml = functions
           margin: 0;
           height: 100%;
       }`,
-        body: [html.div({}, "つくマート読み込み中……")],
+        body: [nHtml.div({}, "つくマート読み込み中……")],
       })
     );
   });
