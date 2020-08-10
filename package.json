@@ -2,7 +2,7 @@
   "name": "tsukumart-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "distribution/main.js",
   "author": "",
   "license": "ISC",
   "dependencies": {

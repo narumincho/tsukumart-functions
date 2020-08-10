@@ -6,6 +6,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "Node",
-    "newLine": "lf"
+    "newLine": "lf",
+    "outDir": "../distribution"
   }
 }

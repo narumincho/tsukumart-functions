@@ -1,10 +1,10 @@
-import * as database from "./lib/database";
-import * as databaseLow from "./lib/databaseLow";
+import * as database from "./database";
+import * as databaseLow from "./databaseLow";
 import * as functions from "firebase-functions";
-import * as libSchema from "./lib/schema";
-import * as lineNotify from "./lib/lineNotify";
+import * as libSchema from "./schema";
+import * as lineNotify from "./lineNotify";
 import * as nHtml from "@narumincho/html";
-import * as signUpCallback from "./lib/signUpCallback";
+import * as signUpCallback from "./signUpCallback";
 import { URL } from "url";
 import { graphqlHTTP } from "express-graphql";
 
