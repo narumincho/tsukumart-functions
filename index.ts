@@ -28,15 +28,7 @@ export const indexHtml = functions
         iconPath: ["assets", "logo_bird.png"],
         coverImageUrl: descriptionAndImageUrl.imageUrl,
         description: descriptionAndImageUrl.description,
-        scriptUrlList: [
-          new URL("https://tsukumart.com/main.js"),
-          new URL("https://www.gstatic.com/firebasejs/7.15.1/firebase-app.js"),
-          new URL(
-            "https://www.gstatic.com/firebasejs/7.15.1/firebase-firestore.js"
-          ),
-          new URL("https://tsukumart.com/__/firebase/init.js"),
-          new URL("https://tsukumart.com/call.js"),
-        ],
+        scriptUrlList: [new URL("https://tsukumart.com/call.js")],
         javaScriptMustBeAvailable: true,
         styleUrlList: [],
         twitterCard: html.TwitterCard.SummaryCardWithLargeImage,
