@@ -2,6 +2,7 @@
   "functions": {
     "source": ".",
     "ignore": [
+      "**/.git/**",
       "**/.github/**",
       "**/source/**",
       "**/node_modules/**",
