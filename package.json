@@ -13,7 +13,7 @@
     "firebase-functions": "3.11.0",
     "graphql": "15.3.0",
     "jsonwebtoken": "8.5.1",
-    "jimp": "0.16.0"
+    "jimp": "0.16.1"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "8.5.0",
