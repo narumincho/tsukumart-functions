@@ -41,7 +41,7 @@ const makeObjectField = <
   Key extends keyof Type,
   // for allがあればなぁ
   T extends { [k in string]: unknown }
->(args: {
+>(parameter: {
   type: g.GraphQLOutputType;
   args: { [k in keyof T]: { type: g.GraphQLInputType } };
   resolve: (
@@ -53,10 +53,10 @@ const makeObjectField = <
   description: string;
 }): GraphQLFieldConfigWithArgs<Type, Key> =>
   ({
-    type: args.type,
-    args: args.args,
-    resolve: args.resolve as any,
-    description: args.description,
+    type: parameter.type,
+    args: parameter.args,
+    resolve: parameter.resolve as unknown,
+    description: parameter.description,
   } as GraphQLFieldConfigWithArgs<Type, Key>);
 
 /** resolveで返すべき部分型を生成する */
@@ -72,7 +72,7 @@ type ReturnLoop<Type> = Type extends { id: string }
 const makeQueryOrMutationField = <
   Args extends { [k in string]: unknown },
   Type
->(args: {
+>(paramter: {
   type: g.GraphQLOutputType;
   args: {
     [a in keyof Args]: {
@@ -87,7 +87,7 @@ const makeQueryOrMutationField = <
     info: g.GraphQLResolveInfo
   ) => Promise<Return<Type>>;
   description: string;
-}): g.GraphQLFieldConfig<void, void, any> => args;
+}): g.GraphQLFieldConfig<void, void, any> => paramter;
 /*
  *  =============================================================
  *                          Product
