@@ -284,7 +284,7 @@ const getUserPrivateListFromCondition = async <
 ): Promise<Array<firestore.QueryDocumentSnapshot>> =>
   (await userPrivateCollectionRef.where(fieldName, operator, value).get()).docs;
 
-export const deleteUser = async () => {
+export const deleteUser = async (): Promise<void> => {
   //サブコレクションを手動で削除しなければならない。履歴、下書きなど
 };
 /*

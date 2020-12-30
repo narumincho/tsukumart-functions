@@ -389,7 +389,10 @@ export const updateProduct = async (
   };
 };
 
-export const deleteProduct = async (userId: string, productId: string) => {
+export const deleteProduct = async (
+  userId: string,
+  productId: string
+): Promise<void> => {
   const now = databaseLow.getNowTimestamp();
   const userData = await databaseLow.getUserData(userId);
   if (!userData.soldProducts.includes(productId)) {
@@ -789,10 +792,10 @@ const getUserListFromUniversityCondition = async (
     case "department": {
       return allUser.filter((e): boolean => {
         switch (e.university.c) {
-          case type.UniversityC.NotGraduate:
-          case type.UniversityC.GraduateTsukuba:
+          case type.UniversityC_NotGraduate:
+          case type.UniversityC_GraduateTsukuba:
             return e.university.schoolAndDepartment === universityCondition.v;
-          case type.UniversityC.GraduateNotTsukuba:
+          case type.UniversityC_GraduateNotTsukuba:
             return false;
         }
       });
@@ -803,10 +806,10 @@ const getUserListFromUniversityCondition = async (
       );
       return allUser.filter((u): boolean => {
         switch (u.university.c) {
-          case type.UniversityC.NotGraduate:
-          case type.UniversityC.GraduateTsukuba:
+          case type.UniversityC_NotGraduate:
+          case type.UniversityC_GraduateTsukuba:
             return departmentList.includes(u.university.schoolAndDepartment);
-          case type.UniversityC.GraduateNotTsukuba:
+          case type.UniversityC_GraduateNotTsukuba:
             return false;
         }
       });
@@ -814,10 +817,10 @@ const getUserListFromUniversityCondition = async (
     case "graduate":
       return allUser.filter((u): boolean => {
         switch (u.university.c) {
-          case type.UniversityC.NotGraduate:
+          case type.UniversityC_NotGraduate:
             return false;
-          case type.UniversityC.GraduateTsukuba:
-          case type.UniversityC.GraduateNotTsukuba:
+          case type.UniversityC_GraduateTsukuba:
+          case type.UniversityC_GraduateNotTsukuba:
             return u.university.graduate === universityCondition.v;
         }
       });
@@ -1242,7 +1245,10 @@ export const cancelTrade = async (
   });
 };
 
-export const finishTrade = async (userId: string, tradeId: string) => {
+export const finishTrade = async (
+  userId: string,
+  tradeId: string
+): Promise<TradeLowCost> => {
   const nowTime = databaseLow.getNowTimestamp();
   const tradeData = await databaseLow.getTradeData(tradeId);
   const productData = await databaseLow.getProduct(tradeData.productId);

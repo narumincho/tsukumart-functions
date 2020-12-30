@@ -606,7 +606,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
       historyViewProductAll: makeObjectField<
         type.UserPrivateInternal,
         "historyViewProductAll",
-        {}
+        Record<string, never>
       >({
         type: g.GraphQLNonNull(
           g.GraphQLList(g.GraphQLNonNull(productGraphQLType))

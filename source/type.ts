@@ -216,18 +216,16 @@ export type UniversityInternal = {
 
 export type University =
   | {
-      c: UniversityC.GraduateTsukuba;
+      c: typeof UniversityC_GraduateTsukuba;
       schoolAndDepartment: Department;
       graduate: Graduate;
     }
-  | { c: UniversityC.GraduateNotTsukuba; graduate: Graduate }
-  | { c: UniversityC.NotGraduate; schoolAndDepartment: Department };
+  | { c: typeof UniversityC_GraduateNotTsukuba; graduate: Graduate }
+  | { c: typeof UniversityC_NotGraduate; schoolAndDepartment: Department };
 
-export const enum UniversityC {
-  GraduateTsukuba,
-  GraduateNotTsukuba,
-  NotGraduate,
-}
+export const UniversityC_GraduateTsukuba = Symbol("GraduateTsukuba");
+export const UniversityC_GraduateNotTsukuba = Symbol("GraduateNotTsukuba");
+export const UniversityC_NotGraduate = Symbol("NotGraduate");
 /**
  *
  * @param universityUnsafe
@@ -241,20 +239,20 @@ export const universityFromInternal = (
     typeof universityUnsafe.schoolAndDepartment === "string"
   ) {
     return {
-      c: UniversityC.GraduateTsukuba,
+      c: UniversityC_GraduateTsukuba,
       graduate: universityUnsafe.graduate,
       schoolAndDepartment: universityUnsafe.schoolAndDepartment,
     };
   }
   if (typeof universityUnsafe.graduate === "string") {
     return {
-      c: UniversityC.GraduateNotTsukuba,
+      c: UniversityC_GraduateNotTsukuba,
       graduate: universityUnsafe.graduate,
     };
   }
   if (typeof universityUnsafe.schoolAndDepartment === "string") {
     return {
-      c: UniversityC.NotGraduate,
+      c: UniversityC_NotGraduate,
       schoolAndDepartment: universityUnsafe.schoolAndDepartment,
     };
   }
@@ -270,17 +268,17 @@ export const universityToInternal = (
   graduate: Graduate | null;
 } => {
   switch (university.c) {
-    case UniversityC.GraduateTsukuba:
+    case UniversityC_GraduateTsukuba:
       return {
         schoolAndDepartment: university.schoolAndDepartment,
         graduate: university.graduate,
       };
-    case UniversityC.GraduateNotTsukuba:
+    case UniversityC_GraduateNotTsukuba:
       return {
         schoolAndDepartment: null,
         graduate: university.graduate,
       };
-    case UniversityC.NotGraduate:
+    case UniversityC_NotGraduate:
       return {
         schoolAndDepartment: university.schoolAndDepartment,
         graduate: null,
