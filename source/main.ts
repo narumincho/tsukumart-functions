@@ -22,20 +22,19 @@ export const html = functions
 
     response.setHeader("content-type", "text/html");
     response.send(
-      nHtml.toString({
+      nHtml.toString.toString({
         appName: "つくマート",
         pageName: descriptionAndImageUrl.title,
-        iconPath: ["assets", "logo_bird.png"],
+        iconPath: "/assets/logo_bird.png",
         coverImageUrl: descriptionAndImageUrl.imageUrl,
         description: descriptionAndImageUrl.description,
         scriptUrlList: [new URL("https://tsukumart.com/call.js")],
-        javaScriptMustBeAvailable: true,
         styleUrlList: [],
         twitterCard: "SummaryCardWithLargeImage",
         language: "Japanese",
         manifestPath: ["manifest.json"],
         url: new URL("https://tsukumart.com/" + request.path),
-        themeColor: "#733fa7",
+        themeColor: { r: 115 / 255, g: 63 / 255, b: 167 / 255 },
         style: `html {
           height: 100%;
       }
@@ -44,7 +43,8 @@ export const html = functions
           margin: 0;
           height: 100%;
       }`,
-        body: [nHtml.div({}, "つくマート読み込み中……")],
+        bodyClass: "dummy",
+        children: nHtml.view.childrenText("つくマート読み込み中……"),
       })
     );
   });
