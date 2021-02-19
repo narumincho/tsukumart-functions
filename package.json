@@ -6,7 +6,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@narumincho/html": "0.2.2",
+    "@narumincho/html": "0.2.4",
     "axios": "0.21.1",
     "express-graphql": "0.12.0",
     "firebase-admin": "9.5.0",
