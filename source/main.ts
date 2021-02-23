@@ -10,6 +10,11 @@ import { graphqlHTTP } from "express-graphql";
 
 console.log("サーバーのプログラムが読み込まれた!");
 
+/*
+ * =====================================================================
+ *                        OGP 付きの HTML 配信
+ * =====================================================================
+ */
 export const html = functions
   .region("us-central1")
   .https.onRequest(async (request, response) => {
@@ -87,7 +92,11 @@ const pathToDescriptionAndImageUrl = async (
   };
 };
 
-/** API */
+/*
+ * =====================================================================
+ *                            GraphQL API
+ * =====================================================================
+ */
 export const api = functions
   .region("asia-northeast1")
   .runWith({
