@@ -127,9 +127,8 @@ export const getAccessTokenFromLogInAccountService = async (
   }
 
   // ユーザーが存在するなら (メール認証から初回)
-  const userBeforeEmailVerification = await databaseLow.getUserBeforeEmailVerification(
-    logInAccountServiceId
-  );
+  const userBeforeEmailVerification =
+    await databaseLow.getUserBeforeEmailVerification(logInAccountServiceId);
   if (userBeforeEmailVerification !== undefined) {
     if (
       await databaseLow.getFirebaseAuthUserEmailVerified(
@@ -547,9 +546,10 @@ const updateProductImage = async (
   }
   if (!restFirstImage) {
     return {
-      thumbnailImageId: await databaseLow.saveThumbnailImageFromCloudStorageToCloudStorage(
-        imageIds[0]
-      ),
+      thumbnailImageId:
+        await databaseLow.saveThumbnailImageFromCloudStorageToCloudStorage(
+          imageIds[0]
+        ),
       imageIds,
     };
   }
@@ -780,7 +780,9 @@ const getUserListFromUniversityCondition = async (
   universityCondition: UniversityCondition
 ): Promise<Array<UserReturnLowConst>> => {
   const allUser = await Promise.all(
-    (await databaseLow.getAllUserData()).map(async (rec) =>
+    (
+      await databaseLow.getAllUserData()
+    ).map(async (rec) =>
       databaseLowUserDataToUserDataLowCost({
         id: rec.id,
         data: rec.data,

@@ -113,179 +113,177 @@ const setProductData = async (
   return data;
 };
 
-const productGraphQLType: g.GraphQLObjectType<
-  type.ProductInternal,
-  void
-> = new g.GraphQLObjectType({
-  name: "Product",
-  fields: () =>
-    makeObjectFieldMap<type.ProductInternal>({
-      id: {
-        type: g.GraphQLNonNull(g.GraphQLID),
-        description: "商品を識別するためのID。String",
-      },
-      name: makeObjectField({
-        type: g.GraphQLNonNull(g.GraphQLString),
-        args: {},
-        resolve: async (source) => {
-          if (source.name === undefined) {
-            return (await setProductData(source)).name;
-          }
-          return source.name;
+const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
+  new g.GraphQLObjectType({
+    name: "Product",
+    fields: () =>
+      makeObjectFieldMap<type.ProductInternal>({
+        id: {
+          type: g.GraphQLNonNull(g.GraphQLID),
+          description: "商品を識別するためのID。String",
         },
-        description: "商品名",
+        name: makeObjectField({
+          type: g.GraphQLNonNull(g.GraphQLString),
+          args: {},
+          resolve: async (source) => {
+            if (source.name === undefined) {
+              return (await setProductData(source)).name;
+            }
+            return source.name;
+          },
+          description: "商品名",
+        }),
+        price: makeObjectField({
+          type: g.GraphQLNonNull(g.GraphQLInt),
+          args: {},
+          resolve: async (source) => {
+            if (source.price === undefined) {
+              return (await setProductData(source)).price;
+            }
+            return source.price;
+          },
+          description: "値段",
+        }),
+        description: makeObjectField({
+          type: g.GraphQLNonNull(g.GraphQLString),
+          args: {},
+          resolve: async (source) => {
+            if (source.description === undefined) {
+              return (await setProductData(source)).description;
+            }
+            return source.description;
+          },
+          description: "説明文",
+        }),
+        condition: makeObjectField({
+          type: type.conditionGraphQLType,
+          args: {},
+          resolve: async (source) => {
+            if (source.condition === undefined) {
+              return (await setProductData(source)).condition;
+            }
+            return source.condition;
+          },
+          description: type.conditionDescription,
+        }),
+        category: makeObjectField({
+          type: g.GraphQLNonNull(type.categoryGraphQLType),
+          args: {},
+          resolve: async (source) => {
+            if (source.category === undefined) {
+              return (await setProductData(source)).category;
+            }
+            return source.category;
+          },
+          description: type.categoryDescription,
+        }),
+        thumbnailImageId: makeObjectField({
+          type: g.GraphQLNonNull(g.GraphQLString),
+          args: {},
+          resolve: async (source) => {
+            if (source.thumbnailImageId === undefined) {
+              return (await setProductData(source)).thumbnailImageId;
+            }
+            return source.thumbnailImageId;
+          },
+          description: "一覧で表示すべきサムネイル画像のURL",
+        }),
+        imageIds: makeObjectField({
+          type: g.GraphQLNonNull(
+            g.GraphQLList(g.GraphQLNonNull(g.GraphQLString))
+          ),
+          args: {},
+          resolve: async (source) => {
+            if (source.imageIds === undefined) {
+              return (await setProductData(source)).imageIds;
+            }
+            return source.imageIds;
+          },
+          description: "商品画像のURL",
+        }),
+        likedCount: makeObjectField({
+          type: g.GraphQLNonNull(g.GraphQLInt),
+          args: {},
+          resolve: async (source) => {
+            if (source.likedCount === undefined) {
+              return (await setProductData(source)).likedCount;
+            }
+            return source.likedCount;
+          },
+          description: "いいねされた数",
+        }),
+        viewedCount: makeObjectField({
+          type: g.GraphQLNonNull(g.GraphQLInt),
+          args: {},
+          resolve: async (source) => {
+            if (source.viewedCount === undefined) {
+              return (await setProductData(source)).viewedCount;
+            }
+            return source.viewedCount;
+          },
+          description: "閲覧履歴に登録された数",
+        }),
+        seller: makeObjectField({
+          type: g.GraphQLNonNull(userGraphQLType),
+          args: {},
+          resolve: async (source) => {
+            if (source.seller === undefined) {
+              return (await setProductData(source)).seller;
+            }
+            return source.seller;
+          },
+          description: "出品者",
+        }),
+        comments: makeObjectField({
+          type: g.GraphQLNonNull(
+            g.GraphQLList(g.GraphQLNonNull(productCommentGraphQLType))
+          ),
+          args: {},
+          resolve: async (source) => {
+            if (source.comments === undefined) {
+              const comments = await database.getProductComments(source.id);
+              source.comments = comments;
+              return comments;
+            }
+            return source.comments;
+          },
+          description: "コメント",
+        }),
+        status: makeObjectField({
+          type: g.GraphQLNonNull(type.productStatusGraphQLType),
+          args: {},
+          resolve: async (source) => {
+            if (source.status === undefined) {
+              return (await setProductData(source)).status;
+            }
+            return source.status;
+          },
+          description: "取引の状態",
+        }),
+        createdAt: makeObjectField({
+          type: g.GraphQLNonNull(type.dateTimeGraphQLType),
+          args: {},
+          resolve: async (source) => {
+            if (source.createdAt === undefined) {
+              return (await setProductData(source)).createdAt;
+            }
+            return source.createdAt;
+          },
+          description: "出品された日時",
+        }),
+        updateAt: makeObjectField({
+          type: g.GraphQLNonNull(type.dateTimeGraphQLType),
+          args: {},
+          resolve: async (source) => {
+            if (source.updateAt === undefined) {
+              return (await setProductData(source)).updateAt;
+            }
+            return source.updateAt;
+          },
+          description: "更新日時",
+        }),
       }),
-      price: makeObjectField({
-        type: g.GraphQLNonNull(g.GraphQLInt),
-        args: {},
-        resolve: async (source) => {
-          if (source.price === undefined) {
-            return (await setProductData(source)).price;
-          }
-          return source.price;
-        },
-        description: "値段",
-      }),
-      description: makeObjectField({
-        type: g.GraphQLNonNull(g.GraphQLString),
-        args: {},
-        resolve: async (source) => {
-          if (source.description === undefined) {
-            return (await setProductData(source)).description;
-          }
-          return source.description;
-        },
-        description: "説明文",
-      }),
-      condition: makeObjectField({
-        type: type.conditionGraphQLType,
-        args: {},
-        resolve: async (source) => {
-          if (source.condition === undefined) {
-            return (await setProductData(source)).condition;
-          }
-          return source.condition;
-        },
-        description: type.conditionDescription,
-      }),
-      category: makeObjectField({
-        type: g.GraphQLNonNull(type.categoryGraphQLType),
-        args: {},
-        resolve: async (source) => {
-          if (source.category === undefined) {
-            return (await setProductData(source)).category;
-          }
-          return source.category;
-        },
-        description: type.categoryDescription,
-      }),
-      thumbnailImageId: makeObjectField({
-        type: g.GraphQLNonNull(g.GraphQLString),
-        args: {},
-        resolve: async (source) => {
-          if (source.thumbnailImageId === undefined) {
-            return (await setProductData(source)).thumbnailImageId;
-          }
-          return source.thumbnailImageId;
-        },
-        description: "一覧で表示すべきサムネイル画像のURL",
-      }),
-      imageIds: makeObjectField({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(g.GraphQLString))
-        ),
-        args: {},
-        resolve: async (source) => {
-          if (source.imageIds === undefined) {
-            return (await setProductData(source)).imageIds;
-          }
-          return source.imageIds;
-        },
-        description: "商品画像のURL",
-      }),
-      likedCount: makeObjectField({
-        type: g.GraphQLNonNull(g.GraphQLInt),
-        args: {},
-        resolve: async (source) => {
-          if (source.likedCount === undefined) {
-            return (await setProductData(source)).likedCount;
-          }
-          return source.likedCount;
-        },
-        description: "いいねされた数",
-      }),
-      viewedCount: makeObjectField({
-        type: g.GraphQLNonNull(g.GraphQLInt),
-        args: {},
-        resolve: async (source) => {
-          if (source.viewedCount === undefined) {
-            return (await setProductData(source)).viewedCount;
-          }
-          return source.viewedCount;
-        },
-        description: "閲覧履歴に登録された数",
-      }),
-      seller: makeObjectField({
-        type: g.GraphQLNonNull(userGraphQLType),
-        args: {},
-        resolve: async (source) => {
-          if (source.seller === undefined) {
-            return (await setProductData(source)).seller;
-          }
-          return source.seller;
-        },
-        description: "出品者",
-      }),
-      comments: makeObjectField({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(productCommentGraphQLType))
-        ),
-        args: {},
-        resolve: async (source) => {
-          if (source.comments === undefined) {
-            const comments = await database.getProductComments(source.id);
-            source.comments = comments;
-            return comments;
-          }
-          return source.comments;
-        },
-        description: "コメント",
-      }),
-      status: makeObjectField({
-        type: g.GraphQLNonNull(type.productStatusGraphQLType),
-        args: {},
-        resolve: async (source) => {
-          if (source.status === undefined) {
-            return (await setProductData(source)).status;
-          }
-          return source.status;
-        },
-        description: "取引の状態",
-      }),
-      createdAt: makeObjectField({
-        type: g.GraphQLNonNull(type.dateTimeGraphQLType),
-        args: {},
-        resolve: async (source) => {
-          if (source.createdAt === undefined) {
-            return (await setProductData(source)).createdAt;
-          }
-          return source.createdAt;
-        },
-        description: "出品された日時",
-      }),
-      updateAt: makeObjectField({
-        type: g.GraphQLNonNull(type.dateTimeGraphQLType),
-        args: {},
-        resolve: async (source) => {
-          if (source.updateAt === undefined) {
-            return (await setProductData(source)).updateAt;
-          }
-          return source.updateAt;
-        },
-        description: "更新日時",
-      }),
-    }),
-});
+  });
 /*
  *  =============================================================
  *                       Product Comment

@@ -3,10 +3,10 @@ import * as databaseLow from "./databaseLow";
 import * as functions from "firebase-functions";
 import * as libSchema from "./schema";
 import * as lineNotify from "./lineNotify";
-import * as nHtml from "@narumincho/html";
 import * as signUpCallback from "./signUpCallback";
 import { URL } from "url";
 import { graphqlHTTP } from "express-graphql";
+import { html as htmlGen } from "@narumincho/gen";
 
 console.log("サーバーのプログラムが読み込まれた!");
 
@@ -27,17 +27,17 @@ export const html = functions
 
     response.setHeader("content-type", "text/html");
     response.send(
-      nHtml.toString.toString({
+      htmlGen.htmlOptionToString({
         appName: "つくマート",
         pageName: descriptionAndImageUrl.title,
-        iconPath: "/assets/logo_bird.png",
+        iconUrl: new URL("https://tsukumart.com/assets/logo_bird.png"),
         coverImageUrl: descriptionAndImageUrl.imageUrl,
         description: descriptionAndImageUrl.description,
         scriptUrlList: [new URL("https://tsukumart.com/call.js")],
         styleUrlList: [],
         twitterCard: "SummaryCardWithLargeImage",
         language: "Japanese",
-        manifestPath: ["manifest.json"],
+        webAppManifestUrl: [new URL("https://tsukumart.com/manifest.json")],
         url: new URL("https://tsukumart.com/" + request.path),
         themeColor: { r: 115 / 255, g: 63 / 255, b: 167 / 255 },
         style: `html {
@@ -49,7 +49,7 @@ export const html = functions
           height: 100%;
       }`,
         bodyClass: "dummy",
-        children: nHtml.view.childrenText("つくマート読み込み中……"),
+        children: [htmlGen.div({}, "つくマート読み込み中……")],
       })
     );
   });
@@ -120,14 +120,12 @@ export const api = functions
  */
 export const logInReceiver = functions
   .region("asia-northeast1")
-  .https.onRequest(
-    async (request, response): Promise<void> => {
-      switch (request.path) {
-        case "/line":
-          await signUpCallback.lineLogInReceiver(request, response);
-      }
+  .https.onRequest(async (request, response): Promise<void> => {
+    switch (request.path) {
+      case "/line":
+        await signUpCallback.lineLogInReceiver(request, response);
     }
-  );
+  });
 
 /*
  * =====================================================================
@@ -136,11 +134,9 @@ export const logInReceiver = functions
  */
 export const notifyCallBack = functions
   .region("asia-northeast1")
-  .https.onRequest(
-    async (request, response): Promise<void> => {
-      await lineNotify.callBack(request, response);
-    }
-  );
+  .https.onRequest(async (request, response): Promise<void> => {
+    await lineNotify.callBack(request, response);
+  });
 /*
  * =====================================================================
  *                           画像を配信する

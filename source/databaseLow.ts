@@ -776,9 +776,8 @@ export const generateAndWriteLineNotifyState = async (
 export const existsLineLogInStateAndDelete = async (
   state: string
 ): Promise<boolean> => {
-  const docRef: FirebaseFirestore.DocumentReference = lineLogInStateCollection.doc(
-    state
-  );
+  const docRef: FirebaseFirestore.DocumentReference =
+    lineLogInStateCollection.doc(state);
   const exists = (await docRef.get()).exists;
   if (exists) {
     await docRef.delete();
@@ -792,9 +791,8 @@ export const existsLineLogInStateAndDelete = async (
 export const existsLineNotifyStateAndDeleteAndGetUserId = async (
   state: string
 ): Promise<string | null> => {
-  const docRef: FirebaseFirestore.DocumentReference = lineNotifyStateCollection.doc(
-    state
-  );
+  const docRef: FirebaseFirestore.DocumentReference =
+    lineNotifyStateCollection.doc(state);
   const data = (await docRef.get()).data();
   if (data === undefined) {
     return null;

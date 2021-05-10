@@ -61,10 +61,12 @@ export const callBack = async (
   } catch (error) {
     console.log("LINE Notifyのエラーだな");
     console.log(
-      (error.response as AxiosResponse<{
-        status: number;
-        message: string;
-      }>).data
+      (
+        error.response as AxiosResponse<{
+          status: number;
+          message: string;
+        }>
+      ).data
     );
 
     response.send("LINE Notifyのエラーだ。悲しい😥");
