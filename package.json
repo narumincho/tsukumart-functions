@@ -12,23 +12,23 @@
     "@narumincho/gen": "1.0.2",
     "axios": "0.21.1",
     "express-graphql": "0.12.0",
-    "firebase-admin": "9.9.0",
-    "firebase-functions": "3.14.1",
-    "graphql": "15.5.0",
+    "firebase-admin": "9.11.0",
+    "firebase-functions": "3.15.3",
+    "graphql": "15.5.1",
     "jimp": "0.16.1",
     "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "8.5.1",
+    "@types/jsonwebtoken": "8.5.4",
     "@types/node": "16.6.1",
-    "@typescript-eslint/eslint-plugin": "4.26.0",
-    "@typescript-eslint/parser": "4.26.0",
-    "eslint": "7.27.0",
+    "@typescript-eslint/eslint-plugin": "4.29.1",
+    "@typescript-eslint/parser": "4.29.1",
+    "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
-    "npm-check-updates": "11.6.0",
-    "prettier": "2.3.0",
-    "typescript": "4.3.2"
+    "npm-check-updates": "11.8.3",
+    "prettier": "2.3.2",
+    "typescript": "4.3.5"
   },
   "engines": {
     "node": "14"
