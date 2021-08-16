@@ -1,10 +1,10 @@
 import * as database from "./database";
 import * as databaseLow from "./databaseLow";
 import * as functions from "firebase-functions";
+import * as http from "http";
 import * as libSchema from "./schema";
 import * as lineNotify from "./lineNotify";
 import * as signUpCallback from "./signUpCallback";
-import { URL } from "url";
 import { graphqlHTTP } from "express-graphql";
 import { html as htmlGen } from "@narumincho/gen";
 
@@ -37,7 +37,7 @@ export const html = functions
         styleUrlList: [],
         twitterCard: "SummaryCardWithLargeImage",
         language: "Japanese",
-        webAppManifestUrl: [new URL("https://tsukumart.com/manifest.json")],
+        webAppManifestUrl: new URL("https://tsukumart.com/manifest.json"),
         url: new URL("https://tsukumart.com/" + request.path),
         themeColor: { r: 115 / 255, g: 63 / 255, b: 167 / 255 },
         style: `html {
@@ -109,7 +109,7 @@ export const api = functions
     }
     await graphqlHTTP({ schema: libSchema.schema, graphiql: true })(
       request,
-      response
+      response as http.ServerResponse
     );
   });
 

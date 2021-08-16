@@ -6,7 +6,8 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "update-package-json": "ncu -u"
+    "update-package-json": "ncu -u",
+    "type-check": "tsc --project source --noEmit"
   },
   "dependencies": {
     "@narumincho/gen": "1.0.2",
