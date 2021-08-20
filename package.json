@@ -20,7 +20,7 @@
     "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "8.5.4",
+    "@types/jsonwebtoken": "8.5.5",
     "@types/node": "16.6.1",
     "@typescript-eslint/eslint-plugin": "4.29.1",
     "@typescript-eslint/parser": "4.29.1",
