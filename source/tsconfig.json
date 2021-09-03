@@ -8,6 +8,7 @@
     "moduleResolution": "Node",
     "newLine": "lf",
     "outDir": "../distribution",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "exactOptionalPropertyTypes": true
   }
 }

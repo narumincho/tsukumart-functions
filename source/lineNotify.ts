@@ -60,14 +60,18 @@ export const callBack = async (
     response.redirect("https://tsukumart.com/");
   } catch (error) {
     console.log("LINE Notifyのエラーだな");
-    console.log(
-      (
-        error.response as AxiosResponse<{
-          status: number;
-          message: string;
-        }>
-      ).data
-    );
+    if (typeof error === "object" && error !== null) {
+      console.log(
+        (
+          error as {
+            response: AxiosResponse<{
+              status: number;
+              message: string;
+            }>;
+          }
+        ).response?.data
+      );
+    }
 
     response.send("LINE Notifyのエラーだ。悲しい😥");
   }
