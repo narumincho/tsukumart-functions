@@ -1,12 +1,16 @@
-import * as admin from "firebase-admin";
 import * as firestore from "@google-cloud/firestore";
 import * as jimp from "jimp";
 import * as stream from "stream";
 import * as type from "./type";
+import { getAuth } from "firebase-admin/auth";
+import { getFirestore } from "firebase-admin/firestore";
+import { getStorage } from "firebase-admin/storage";
+import { initializeApp } from "firebase-admin/app";
 
-const initializedAdmin = admin.initializeApp();
-const dataBase = initializedAdmin.firestore();
-const storage = initializedAdmin.storage().bucket();
+const initializedAdmin = initializeApp();
+const dataBase = getFirestore(initializedAdmin);
+const storage = getStorage(initializedAdmin).bucket();
+const auth = getAuth(initializedAdmin);
 
 const userCollectionRef = dataBase.collection("user");
 const userPrivateCollectionRef = dataBase.collection("userPrivate");
@@ -637,18 +641,15 @@ export const timestampToDate = (timeStamp: firestore.Timestamp): Date =>
 export const createFirebaseAuthUserByRandomPassword = (
   email: string,
   displayName: string
-): Promise<string> =>
-  new Promise((resolve, reject) => {
-    initializedAdmin
-      .auth()
+): Promise<string> => {
+  return new Promise((resolve) => {
+    auth
       .getUserByEmail(email)
       .then((user) => {
-        user.displayName = displayName;
         resolve(user.uid);
       })
       .catch(() => {
-        initializedAdmin
-          .auth()
+        auth
           .createUser({
             email,
             password: createRandomPassword(),
@@ -659,6 +660,7 @@ export const createFirebaseAuthUserByRandomPassword = (
           });
       });
   });
+};
 
 const createRandomPassword = (): string => {
   let id = "";
@@ -672,15 +674,14 @@ const createRandomPassword = (): string => {
 
 export const getFirebaseAuthUserEmailVerified = async (
   id: string
-): Promise<boolean> =>
-  (await initializedAdmin.auth().getUser(id)).emailVerified;
+): Promise<boolean> => (await auth.getUser(id)).emailVerified;
 /*
  * ==========================================
  *          Firebase Client Auth
  * ==========================================
  */
 export const createCustomToken = (uid: string): Promise<string> =>
-  initializedAdmin.auth().createCustomToken(uid);
+  auth.createCustomToken(uid);
 /*
  * ==========================================
  *          Firebase Cloud Storage

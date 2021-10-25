@@ -3,7 +3,7 @@ import * as jwt from "jsonwebtoken";
 import * as key from "./key";
 import * as lineNotify from "./lineNotify";
 import * as type from "./type";
-import { firestore } from "firebase-admin";
+import { FieldValue } from "firebase-admin/firestore";
 
 /**
  * 指定したStateがつくマート自身が発行したものかどうか調べ、あったらそのStateを削除する
@@ -987,7 +987,7 @@ export const likeProduct = async (
     return;
   }
   await databaseLow.updateProductData(productId, {
-    likedCount: firestore.FieldValue.increment(1),
+    likedCount: FieldValue.increment(1),
   });
   await databaseLow.addLikedProductData(userId, productId, {
     createdAt: databaseLow.getNowTimestamp(),
@@ -1003,7 +1003,7 @@ export const unlikeProduct = async (
     return;
   }
   await databaseLow.updateProductData(productId, {
-    likedCount: firestore.FieldValue.increment(-1),
+    likedCount: FieldValue.increment(-1),
   });
   await databaseLow.deleteLikedProductData(userId, productId);
 };
