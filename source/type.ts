@@ -6,67 +6,132 @@ import { URL } from "url";
  *              URL
  * ====================================
  */
+const urlTypeSerialize: g.GraphQLScalarSerializer<string> = (url) => {
+  if (url instanceof URL) {
+    return url.toString();
+  }
+  throw new Error("url is not instance of URL in urlTypeScalarType serialize");
+};
+
+const urlTypeParseValue: g.GraphQLScalarValueParser<URL> = (value) => {
+  if (typeof value === "string") {
+    return new URL(value);
+  }
+  throw new Error("value is not string urlTypeScalarType parseValue");
+};
+
 const urlTypeScalarTypeConfig: g.GraphQLScalarTypeConfig<URL, string> = {
   name: "URL",
   description: `URL 文字列で指定する 例"https://narumincho.com/definy/spec.html"`,
-  serialize: (url: URL): string => url.toString(),
-  parseValue: (value: string): URL => new URL(value),
+  serialize: urlTypeSerialize,
+  parseValue: urlTypeParseValue,
 };
 
 export const urlGraphQLType = new g.GraphQLScalarType(urlTypeScalarTypeConfig);
 
-/**
+/*
  * ===================================
  *           Data URL
  * ====================================
  */
-export type DataURL = { mimeType: string; data: Buffer };
+const dataUrlTypeSerialize: g.GraphQLScalarSerializer<string> = (dataUrl) => {
+  if (typeof dataUrl !== "object" || dataUrl === null) {
+    throw new Error("");
+  }
+  return dataUrlTypeSerializeInternal(
+    dataUrl as { mimeType: unknown; data: unknown }
+  );
+};
+
+const dataUrlTypeSerializeInternal = ({
+  mimeType,
+  data,
+}: {
+  mimeType: unknown;
+  data: unknown;
+}): string => {
+  if (typeof mimeType === "string" && data instanceof Uint8Array) {
+    return "data:" + mimeType + ";base64," + data.toString();
+  }
+  throw new Error(
+    "value is not DataURL object in dataUrlTypeSerializeInternal"
+  );
+};
+
+const dataUrlTypeParseValue: g.GraphQLScalarValueParser<DataURL> = (
+  value: unknown
+) => {
+  if (typeof value !== "string") {
+    throw new Error("value is not string in dataUrlTypeParseValue");
+  }
+  const imageDataUrlMimeType = value.match(
+    /^data:(?<mimeType>.+);base64,(?<data>.+)$/u
+  );
+  if (
+    imageDataUrlMimeType === null ||
+    imageDataUrlMimeType.groups === undefined
+  ) {
+    throw new Error("invalid DataURL");
+  }
+  return {
+    mimeType: imageDataUrlMimeType.groups.mimeType,
+    data: Buffer.from(imageDataUrlMimeType.groups.data, "base64"),
+  };
+};
+
+export type DataURL = { readonly mimeType: string; readonly data: Uint8Array };
 
 const dataUrlTypeConfig: g.GraphQLScalarTypeConfig<DataURL, string> = {
   name: "DataURL",
   description:
     "DataURL (https://developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) base64エンコードのみサポート",
-  serialize: (value: DataURL): string =>
-    "data:" + value.mimeType + ";base64," + value.data.toString(),
-  parseValue: (value: string): DataURL => {
-    const imageDataUrlMimeType = value.match(
-      /^data:(?<mimeType>.+);base64,(?<data>.+)$/u
-    );
-    if (
-      imageDataUrlMimeType === null ||
-      imageDataUrlMimeType.groups === undefined
-    ) {
-      throw new Error("invalid DataURL");
-    }
-    return {
-      mimeType: imageDataUrlMimeType.groups.mimeType,
-      data: Buffer.from(imageDataUrlMimeType.groups.data, "base64"),
-    };
-  },
+  serialize: dataUrlTypeSerialize,
+  parseValue: dataUrlTypeParseValue,
 };
 
 export const dataUrlGraphQLType = new g.GraphQLScalarType(dataUrlTypeConfig);
-/**
+
+/*
  * ===================================
  *            DateTime
  * ====================================
  */
+const dateTimeTypeSerialize: g.GraphQLScalarSerializer<number> = (
+  value
+): number => {
+  if (value instanceof Date) {
+    return value.getTime();
+  }
+  throw new Error("value is not Date in dateTimeTypeSerialize");
+};
+
+const dateTimeTypeParseValue: g.GraphQLScalarValueParser<Date> = (
+  value
+): Date => {
+  if (typeof value === "number") {
+    return new Date(value);
+  }
+  throw new Error("value is not number in dateTimeTypeParseValue");
+};
+
+const dateTimeTypeParseLiteral: g.GraphQLScalarLiteralParser<Date> = (ast) => {
+  if (ast.kind === "FloatValue" || ast.kind === "IntValue") {
+    try {
+      return new Date(Number.parseInt(ast.value, 10));
+    } catch {
+      return new Date();
+    }
+  }
+  return new Date();
+};
+
 const dateTimeTypeConfig: g.GraphQLScalarTypeConfig<Date, number> = {
   name: "DateTime",
   description:
     "日付と時刻。1970年1月1日 00:00:00 UTCから指定した日時までの経過時間をミリ秒で表した数値 2038年問題を回避するために64bitFloatの型を使う",
-  serialize: (value: Date): number => value.getTime(),
-  parseValue: (value: number): Date => new Date(value),
-  parseLiteral: (ast) => {
-    if (ast.kind === "FloatValue" || ast.kind === "IntValue") {
-      try {
-        return new Date(Number.parseInt(ast.value, 10));
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  },
+  serialize: dateTimeTypeSerialize,
+  parseValue: dateTimeTypeParseValue,
+  parseLiteral: dateTimeTypeParseLiteral,
 };
 
 export const dateTimeGraphQLType = new g.GraphQLScalarType(dateTimeTypeConfig);

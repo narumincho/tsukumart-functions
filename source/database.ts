@@ -607,8 +607,10 @@ export const setProfile = async (
   };
 };
 
-export const saveImage = (data: Buffer, mimeType: string): Promise<string> =>
-  databaseLow.saveFileToCloudStorage(data, mimeType);
+export const saveImage = (
+  data: Uint8Array,
+  mimeType: string
+): Promise<string> => databaseLow.saveFileToCloudStorage(data, mimeType);
 
 export const deleteImage = async (imageId: string): Promise<void> => {
   await databaseLow.deleteStorageFile(imageId);

@@ -701,13 +701,13 @@ export const saveFileToCloudStorage = async (
 };
 
 export const saveThumbnailImageToCloudStorage = async (
-  data: Buffer,
+  data: Uint8Array,
   mimeType: string
 ): Promise<string> => {
   const fileId = createRandomFileId();
   const file = storage.file(fileId);
   file.save(
-    await (await jimp.create(data))
+    await (await jimp.create(Buffer.from(data)))
       .cover(300, 300)
       .getBufferAsync(jimp.MIME_PNG),
     {

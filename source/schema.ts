@@ -119,11 +119,11 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
     fields: () =>
       makeObjectFieldMap<type.ProductInternal>({
         id: {
-          type: g.GraphQLNonNull(g.GraphQLID),
+          type: new g.GraphQLNonNull(g.GraphQLID),
           description: "商品を識別するためのID。String",
         },
         name: makeObjectField({
-          type: g.GraphQLNonNull(g.GraphQLString),
+          type: new g.GraphQLNonNull(g.GraphQLString),
           args: {},
           resolve: async (source) => {
             if (source.name === undefined) {
@@ -134,7 +134,7 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: "商品名",
         }),
         price: makeObjectField({
-          type: g.GraphQLNonNull(g.GraphQLInt),
+          type: new g.GraphQLNonNull(g.GraphQLInt),
           args: {},
           resolve: async (source) => {
             if (source.price === undefined) {
@@ -145,7 +145,7 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: "値段",
         }),
         description: makeObjectField({
-          type: g.GraphQLNonNull(g.GraphQLString),
+          type: new g.GraphQLNonNull(g.GraphQLString),
           args: {},
           resolve: async (source) => {
             if (source.description === undefined) {
@@ -167,7 +167,7 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: type.conditionDescription,
         }),
         category: makeObjectField({
-          type: g.GraphQLNonNull(type.categoryGraphQLType),
+          type: new g.GraphQLNonNull(type.categoryGraphQLType),
           args: {},
           resolve: async (source) => {
             if (source.category === undefined) {
@@ -178,7 +178,7 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: type.categoryDescription,
         }),
         thumbnailImageId: makeObjectField({
-          type: g.GraphQLNonNull(g.GraphQLString),
+          type: new g.GraphQLNonNull(g.GraphQLString),
           args: {},
           resolve: async (source) => {
             if (source.thumbnailImageId === undefined) {
@@ -189,8 +189,8 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: "一覧で表示すべきサムネイル画像のURL",
         }),
         imageIds: makeObjectField({
-          type: g.GraphQLNonNull(
-            g.GraphQLList(g.GraphQLNonNull(g.GraphQLString))
+          type: new g.GraphQLNonNull(
+            new g.GraphQLList(new g.GraphQLNonNull(g.GraphQLString))
           ),
           args: {},
           resolve: async (source) => {
@@ -202,7 +202,7 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: "商品画像のURL",
         }),
         likedCount: makeObjectField({
-          type: g.GraphQLNonNull(g.GraphQLInt),
+          type: new g.GraphQLNonNull(g.GraphQLInt),
           args: {},
           resolve: async (source) => {
             if (source.likedCount === undefined) {
@@ -213,7 +213,7 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: "いいねされた数",
         }),
         viewedCount: makeObjectField({
-          type: g.GraphQLNonNull(g.GraphQLInt),
+          type: new g.GraphQLNonNull(g.GraphQLInt),
           args: {},
           resolve: async (source) => {
             if (source.viewedCount === undefined) {
@@ -224,7 +224,7 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: "閲覧履歴に登録された数",
         }),
         seller: makeObjectField({
-          type: g.GraphQLNonNull(userGraphQLType),
+          type: new g.GraphQLNonNull(userGraphQLType),
           args: {},
           resolve: async (source) => {
             if (source.seller === undefined) {
@@ -235,8 +235,8 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: "出品者",
         }),
         comments: makeObjectField({
-          type: g.GraphQLNonNull(
-            g.GraphQLList(g.GraphQLNonNull(productCommentGraphQLType))
+          type: new g.GraphQLNonNull(
+            new g.GraphQLList(new g.GraphQLNonNull(productCommentGraphQLType))
           ),
           args: {},
           resolve: async (source) => {
@@ -250,7 +250,7 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: "コメント",
         }),
         status: makeObjectField({
-          type: g.GraphQLNonNull(type.productStatusGraphQLType),
+          type: new g.GraphQLNonNull(type.productStatusGraphQLType),
           args: {},
           resolve: async (source) => {
             if (source.status === undefined) {
@@ -261,7 +261,7 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: "取引の状態",
         }),
         createdAt: makeObjectField({
-          type: g.GraphQLNonNull(type.dateTimeGraphQLType),
+          type: new g.GraphQLNonNull(type.dateTimeGraphQLType),
           args: {},
           resolve: async (source) => {
             if (source.createdAt === undefined) {
@@ -272,7 +272,7 @@ const productGraphQLType: g.GraphQLObjectType<type.ProductInternal, void> =
           description: "出品された日時",
         }),
         updateAt: makeObjectField({
-          type: g.GraphQLNonNull(type.dateTimeGraphQLType),
+          type: new g.GraphQLNonNull(type.dateTimeGraphQLType),
           args: {},
           resolve: async (source) => {
             if (source.updateAt === undefined) {
@@ -294,20 +294,20 @@ const productCommentGraphQLType = new g.GraphQLObjectType({
   fields: () =>
     makeObjectFieldMap<type.TradeComment>({
       commentId: {
-        type: g.GraphQLNonNull(g.GraphQLID),
+        type: new g.GraphQLNonNull(g.GraphQLID),
         description:
           "商品のコメントを識別するためのID。商品内で閉じたID。String",
       },
       body: {
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         description: "本文",
       },
       speaker: {
-        type: g.GraphQLNonNull(userGraphQLType),
+        type: new g.GraphQLNonNull(userGraphQLType),
         description: "発言者",
       },
       createdAt: {
-        type: g.GraphQLNonNull(type.dateTimeGraphQLType),
+        type: new g.GraphQLNonNull(type.dateTimeGraphQLType),
         description: "コメントが作成された日時",
       },
     }),
@@ -329,12 +329,12 @@ export const draftProductGraphQLType = new g.GraphQLObjectType<
   fields: () =>
     makeObjectFieldMap<type.DraftProduct>({
       draftId: {
-        type: g.GraphQLNonNull(g.GraphQLID),
+        type: new g.GraphQLNonNull(g.GraphQLID),
         description:
           "下書きの商品を識別するためのID。ユーザー内で閉じたID。String",
       },
       name: {
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         description: "商品名",
       },
       price: {
@@ -342,7 +342,7 @@ export const draftProductGraphQLType = new g.GraphQLObjectType<
         description: "値段 まだ決めていない場合はnull",
       },
       description: {
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         description: "商品の説明文",
       },
       condition: {
@@ -354,11 +354,11 @@ export const draftProductGraphQLType = new g.GraphQLObjectType<
         description: "商品を分類するカテゴリー まだ決めていない場合はnull",
       },
       thumbnailImageId: {
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         description: "サムネイル画像",
       },
       imageIds: {
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         description: "画像",
       },
       createdAt: {
@@ -395,11 +395,11 @@ const userGraphQLType = new g.GraphQLObjectType({
   fields: () =>
     makeObjectFieldMap<type.UserInternal>({
       id: {
-        type: g.GraphQLNonNull(g.GraphQLID),
+        type: new g.GraphQLNonNull(g.GraphQLID),
         description: "ユーザーを識別するためのID。String",
       },
       displayName: makeObjectField({
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         args: {},
         resolve: async (source) => {
           if (source.displayName === undefined) {
@@ -410,7 +410,7 @@ const userGraphQLType = new g.GraphQLObjectType({
         description: "表示名",
       }),
       imageId: makeObjectField({
-        type: g.GraphQLNonNull(type.urlGraphQLType),
+        type: new g.GraphQLNonNull(type.urlGraphQLType),
         args: {},
         resolve: async (source) => {
           if (source.imageId === undefined) {
@@ -421,7 +421,7 @@ const userGraphQLType = new g.GraphQLObjectType({
         description: "プロフィール画像のURL",
       }),
       introduction: makeObjectField({
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         args: {},
         description: "紹介文",
         resolve: async (source) => {
@@ -432,7 +432,7 @@ const userGraphQLType = new g.GraphQLObjectType({
         },
       }),
       university: makeObjectField({
-        type: g.GraphQLNonNull(type.universityGraphQLObjectType),
+        type: new g.GraphQLNonNull(type.universityGraphQLObjectType),
         args: {},
         description: "所属",
         resolve: async (source) => {
@@ -445,7 +445,7 @@ const userGraphQLType = new g.GraphQLObjectType({
         },
       }),
       createdAt: makeObjectField({
-        type: g.GraphQLNonNull(type.dateTimeGraphQLType),
+        type: new g.GraphQLNonNull(type.dateTimeGraphQLType),
         args: {},
         resolve: async (source) => {
           if (source.createdAt === undefined) {
@@ -456,8 +456,8 @@ const userGraphQLType = new g.GraphQLObjectType({
         description: "ユーザーが作成された日時",
       }),
       soldProductAll: makeObjectField({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
+        type: new g.GraphQLNonNull(
+          new g.GraphQLList(new g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
         resolve: async (source) => {
@@ -501,11 +501,11 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
   fields: () =>
     makeObjectFieldMap<type.UserPrivateInternal>({
       id: {
-        type: g.GraphQLNonNull(g.GraphQLID),
+        type: new g.GraphQLNonNull(g.GraphQLID),
         description: "ユーザーを識別するためのID。String",
       },
       displayName: makeObjectField({
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         args: {},
         resolve: async (source) => {
           if (source.displayName === undefined) {
@@ -516,7 +516,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
         description: "表示名",
       }),
       imageId: makeObjectField({
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         args: {},
         resolve: async (source) => {
           if (source.imageId === undefined) {
@@ -528,7 +528,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
           "プロフィール画像ID https://asia-northeast1-tsukumart-f0971.cloudfunctions.net/image/{imageID}",
       }),
       introduction: makeObjectField({
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         args: {},
         resolve: async (source) => {
           if (source.introduction === undefined) {
@@ -539,7 +539,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
         description: "紹介文",
       }),
       university: makeObjectField({
-        type: g.GraphQLNonNull(type.universityGraphQLObjectType),
+        type: new g.GraphQLNonNull(type.universityGraphQLObjectType),
         args: {},
         resolve: async (source) => {
           if (source.university === undefined) {
@@ -552,7 +552,7 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
         description: "所属",
       }),
       createdAt: makeObjectField({
-        type: g.GraphQLNonNull(type.dateTimeGraphQLType),
+        type: new g.GraphQLNonNull(type.dateTimeGraphQLType),
         args: {},
         resolve: async (source) => {
           if (source.createdAt === undefined) {
@@ -563,8 +563,8 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
         description: "ユーザーが作成された日時",
       }),
       soldProductAll: makeObjectField({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
+        type: new g.GraphQLNonNull(
+          new g.GraphQLList(new g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
         resolve: async (source) => {
@@ -576,8 +576,8 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
         description: "出品した商品すべて",
       }),
       boughtProductAll: makeObjectField({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
+        type: new g.GraphQLNonNull(
+          new g.GraphQLList(new g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
         resolve: async (source) => {
@@ -589,8 +589,8 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
         description: "購入した商品すべて",
       }),
       likedProductAll: makeObjectField({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
+        type: new g.GraphQLNonNull(
+          new g.GraphQLList(new g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
         resolve: async (source) => {
@@ -606,8 +606,8 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
         "historyViewProductAll",
         Record<string, never>
       >({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
+        type: new g.GraphQLNonNull(
+          new g.GraphQLList(new g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
         resolve: async (source) => {
@@ -619,8 +619,8 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
         description: "閲覧した商品",
       }),
       commentedProductAll: makeObjectField({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(productGraphQLType))
+        type: new g.GraphQLNonNull(
+          new g.GraphQLList(new g.GraphQLNonNull(productGraphQLType))
         ),
         args: {},
         resolve: async (source) => {
@@ -632,8 +632,8 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
         description: "コメントした商品",
       }),
       draftProducts: makeObjectField({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(draftProductGraphQLType))
+        type: new g.GraphQLNonNull(
+          new g.GraphQLList(new g.GraphQLNonNull(draftProductGraphQLType))
         ),
         args: {},
         resolve: async (source) => {
@@ -647,8 +647,8 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
         description: "下書きの商品",
       }),
       tradingAll: makeObjectField({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(tradeGraphQLType))
+        type: new g.GraphQLNonNull(
+          new g.GraphQLList(new g.GraphQLNonNull(tradeGraphQLType))
         ),
         args: {},
         resolve: async (source) => {
@@ -660,8 +660,8 @@ const userPrivateGraphQLType = new g.GraphQLObjectType({
         description: "取引中の取引データ",
       }),
       tradedAll: makeObjectField({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(tradeGraphQLType))
+        type: new g.GraphQLNonNull(
+          new g.GraphQLList(new g.GraphQLNonNull(tradeGraphQLType))
         ),
         args: {},
         resolve: async (source) => {
@@ -697,11 +697,11 @@ const tradeGraphQLType = new g.GraphQLObjectType({
   fields: () =>
     makeObjectFieldMap<type.Trade>({
       id: {
-        type: g.GraphQLNonNull(g.GraphQLID),
+        type: new g.GraphQLNonNull(g.GraphQLID),
         description: "取引データを識別するためのID。String",
       },
       product: makeObjectField({
-        type: g.GraphQLNonNull(productGraphQLType),
+        type: new g.GraphQLNonNull(productGraphQLType),
         args: {},
         description: "取引中の商品",
         resolve: async (source) => {
@@ -712,7 +712,7 @@ const tradeGraphQLType = new g.GraphQLObjectType({
         },
       }),
       buyer: makeObjectField({
-        type: g.GraphQLNonNull(userGraphQLType),
+        type: new g.GraphQLNonNull(userGraphQLType),
         args: {},
         description: "商品を買いたい人",
         resolve: async (source) => {
@@ -723,8 +723,8 @@ const tradeGraphQLType = new g.GraphQLObjectType({
         },
       }),
       comment: makeObjectField({
-        type: g.GraphQLNonNull(
-          g.GraphQLList(g.GraphQLNonNull(tradeCommentGraphQLType))
+        type: new g.GraphQLNonNull(
+          new g.GraphQLList(new g.GraphQLNonNull(tradeCommentGraphQLType))
         ),
         args: {},
         description: "コメント",
@@ -738,7 +738,7 @@ const tradeGraphQLType = new g.GraphQLObjectType({
         },
       }),
       createdAt: makeObjectField({
-        type: g.GraphQLNonNull(type.dateTimeGraphQLType),
+        type: new g.GraphQLNonNull(type.dateTimeGraphQLType),
         args: {},
         description: "取引開始日時",
         resolve: async (source) => {
@@ -749,7 +749,7 @@ const tradeGraphQLType = new g.GraphQLObjectType({
         },
       }),
       updateAt: makeObjectField({
-        type: g.GraphQLNonNull(type.dateTimeGraphQLType),
+        type: new g.GraphQLNonNull(type.dateTimeGraphQLType),
         args: {},
         description: "更新日時",
         resolve: async (source) => {
@@ -760,7 +760,7 @@ const tradeGraphQLType = new g.GraphQLObjectType({
         },
       }),
       status: makeObjectField({
-        type: g.GraphQLNonNull(type.TradeStatusGraphQLType),
+        type: new g.GraphQLNonNull(type.TradeStatusGraphQLType),
         args: {},
         description: type.tradeStatusDescription,
         resolve: async (source) => {
@@ -783,20 +783,20 @@ const tradeCommentGraphQLType = new g.GraphQLObjectType({
   fields: () =>
     makeObjectFieldMap<type.TradeComment>({
       commentId: {
-        type: g.GraphQLNonNull(g.GraphQLID),
+        type: new g.GraphQLNonNull(g.GraphQLID),
         description:
           "取引のコメントを識別するためのID。取引内で閉じたID。String",
       },
       body: {
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         description: "本文",
       },
       speaker: {
-        type: g.GraphQLNonNull(type.sellerOrBuyerGraphQLType),
+        type: new g.GraphQLNonNull(type.sellerOrBuyerGraphQLType),
         description: "発言者",
       },
       createdAt: {
-        type: g.GraphQLNonNull(type.dateTimeGraphQLType),
+        type: new g.GraphQLNonNull(type.dateTimeGraphQLType),
         description: "コメントが作成された日時",
       },
     }),
@@ -810,7 +810,7 @@ const tradeCommentGraphQLType = new g.GraphQLObjectType({
 
 const hello = makeQueryOrMutationField<Record<never, never>, string>({
   args: {},
-  type: g.GraphQLNonNull(g.GraphQLString),
+  type: new g.GraphQLNonNull(g.GraphQLString),
   resolve: (): Promise<string> => {
     return Promise.resolve("Hello World! I'm Tsuku Bird. 🐦");
   },
@@ -818,10 +818,10 @@ const hello = makeQueryOrMutationField<Record<never, never>, string>({
 });
 
 const user = makeQueryOrMutationField<{ userId: string }, type.UserInternal>({
-  type: g.GraphQLNonNull(userGraphQLType),
+  type: new g.GraphQLNonNull(userGraphQLType),
   args: {
     userId: {
-      type: g.GraphQLNonNull(g.GraphQLID),
+      type: new g.GraphQLNonNull(g.GraphQLID),
       description: "ユーザーを識別するためのID",
     },
   },
@@ -846,11 +846,11 @@ const userPrivate = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
   },
-  type: g.GraphQLNonNull(userPrivateGraphQLType),
+  type: new g.GraphQLNonNull(userPrivateGraphQLType),
   resolve: async (source, args): Promise<Return<type.UserPrivateInternal>> => {
     return (await database.getUserData(
       await database.verifyAccessToken(args.accessToken)
@@ -865,11 +865,11 @@ const product = makeQueryOrMutationField<
 >({
   args: {
     productId: {
-      type: g.GraphQLNonNull(g.GraphQLID),
+      type: new g.GraphQLNonNull(g.GraphQLID),
       description: productGraphQLType.getFields().id.description,
     },
   },
-  type: g.GraphQLNonNull(productGraphQLType),
+  type: new g.GraphQLNonNull(productGraphQLType),
   resolve: (source, args) => database.getProduct(args.productId),
   description: "商品の情報を取得する",
 });
@@ -888,7 +888,7 @@ const productSearch = makeQueryOrMutationField<
 >({
   args: {
     query: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "検索語句",
     },
     category: {
@@ -920,7 +920,9 @@ const productSearch = makeQueryOrMutationField<
         "出品者の研究科の指定。nullで指定なし。schoolかdepartmentを指定していたら無視される",
     },
   },
-  type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(productGraphQLType))),
+  type: new g.GraphQLNonNull(
+    new g.GraphQLList(new g.GraphQLNonNull(productGraphQLType))
+  ),
   resolve: (source, args) => {
     return database.productSearch({
       query: args.query,
@@ -993,7 +995,9 @@ const productAll = makeQueryOrMutationField<
   Array<type.ProductInternal>
 >({
   args: {},
-  type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(productGraphQLType))),
+  type: new g.GraphQLNonNull(
+    new g.GraphQLList(new g.GraphQLNonNull(productGraphQLType))
+  ),
   resolve: () => database.getAllProducts(),
   description: "すべての商品(売れたものも含まれる)を取得する",
 });
@@ -1003,7 +1007,9 @@ const productRecentAll = makeQueryOrMutationField<
   Array<type.ProductInternal>
 >({
   args: {},
-  type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(productGraphQLType))),
+  type: new g.GraphQLNonNull(
+    new g.GraphQLList(new g.GraphQLNonNull(productGraphQLType))
+  ),
   resolve: () => database.getRecentProducts(),
   description: "すべての商品(売れたものを含む)を新着順に取得する",
 });
@@ -1013,7 +1019,9 @@ const productRecommendAll = makeQueryOrMutationField<
   Array<type.ProductInternal>
 >({
   args: {},
-  type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(productGraphQLType))),
+  type: new g.GraphQLNonNull(
+    new g.GraphQLList(new g.GraphQLNonNull(productGraphQLType))
+  ),
   resolve: () => database.getRecommendProducts(),
   description: "すべての商品(売れたものを含む)をいいねが多い順に取得する",
 });
@@ -1023,7 +1031,9 @@ const productFreeAll = makeQueryOrMutationField<
   Array<type.ProductInternal>
 >({
   args: {},
-  type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(productGraphQLType))),
+  type: new g.GraphQLNonNull(
+    new g.GraphQLList(new g.GraphQLNonNull(productGraphQLType))
+  ),
   resolve: () => database.getFreeProducts(),
   description: "すべての0円の商品(売れたものも含まれる)を取得する",
 });
@@ -1034,15 +1044,15 @@ const trade = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     tradeId: {
-      type: g.GraphQLNonNull(g.GraphQLID),
+      type: new g.GraphQLNonNull(g.GraphQLID),
       description: tradeGraphQLType.getFields().id.description,
     },
   },
-  type: g.GraphQLNonNull(tradeGraphQLType),
+  type: new g.GraphQLNonNull(tradeGraphQLType),
   resolve: async (source, args) => {
     const userId = await database.verifyAccessToken(args.accessToken);
     const userData = await database.getUserData(userId);
@@ -1081,10 +1091,10 @@ const getLogInUrl = makeQueryOrMutationField<
   { service: type.AccountService },
   URL
 >({
-  type: g.GraphQLNonNull(type.urlGraphQLType),
+  type: new g.GraphQLNonNull(type.urlGraphQLType),
   args: {
     service: {
-      type: g.GraphQLNonNull(type.accountServiceGraphQLType),
+      type: new g.GraphQLNonNull(type.accountServiceGraphQLType),
       description: type.accountServiceGraphQLType.description,
     },
   },
@@ -1111,10 +1121,10 @@ const getLogInUrl = makeQueryOrMutationField<
 
 const getLineNotifyUrl = makeQueryOrMutationField<{ accessToken: string }, URL>(
   {
-    type: g.GraphQLNonNull(type.urlGraphQLType),
+    type: new g.GraphQLNonNull(type.urlGraphQLType),
     args: {
       accessToken: {
-        type: g.GraphQLNonNull(g.GraphQLString),
+        type: new g.GraphQLNonNull(g.GraphQLString),
         description: type.accessTokenDescription,
       },
     },
@@ -1150,14 +1160,14 @@ const registerSignUpData = makeQueryOrMutationField<
   } & Pick<type.UserPrivateInternal, "displayName" | "university">,
   string
 >({
-  type: g.GraphQLNonNull(g.GraphQLString),
+  type: new g.GraphQLNonNull(g.GraphQLString),
   args: {
     sendEmailToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "認証メールを送るのに必要なトークン",
     },
     displayName: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "表示名",
     },
     image: {
@@ -1166,11 +1176,11 @@ const registerSignUpData = makeQueryOrMutationField<
         "画像。サイズは400x400まで。ソーシャルログインで使ったサービスのままならnull",
     },
     university: {
-      type: g.GraphQLNonNull(type.universityGraphQLInputType),
+      type: new g.GraphQLNonNull(type.universityGraphQLInputType),
       description: type.universityGraphQLInputType.description,
     },
     email: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "メールアドレス",
     },
   },
@@ -1236,14 +1246,14 @@ const updateProfile = makeQueryOrMutationField<
   >,
   type.UserPrivateInternal
 >({
-  type: g.GraphQLNonNull(userPrivateGraphQLType),
+  type: new g.GraphQLNonNull(userPrivateGraphQLType),
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     displayName: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "表示名",
     },
     image: {
@@ -1251,11 +1261,11 @@ const updateProfile = makeQueryOrMutationField<
       description: "画像(DataURL) 変更しないならnull",
     },
     introduction: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "紹介文",
     },
     university: {
-      type: g.GraphQLNonNull(type.universityGraphQLInputType),
+      type: new g.GraphQLNonNull(type.universityGraphQLInputType),
       description: type.universityGraphQLInputType.description,
     },
   },
@@ -1293,37 +1303,37 @@ const sellProduct = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     name: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "商品名",
     },
     price: {
-      type: g.GraphQLNonNull(g.GraphQLInt),
+      type: new g.GraphQLNonNull(g.GraphQLInt),
       description: "値段",
     },
     description: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "説明文",
     },
     images: {
-      type: g.GraphQLNonNull(
-        g.GraphQLList(g.GraphQLNonNull(type.dataUrlGraphQLType))
+      type: new g.GraphQLNonNull(
+        new g.GraphQLList(new g.GraphQLNonNull(type.dataUrlGraphQLType))
       ),
       description: "商品画像",
     },
     condition: {
-      type: g.GraphQLNonNull(type.conditionGraphQLType),
+      type: new g.GraphQLNonNull(type.conditionGraphQLType),
       description: type.conditionDescription,
     },
     category: {
-      type: g.GraphQLNonNull(type.categoryGraphQLType),
+      type: new g.GraphQLNonNull(type.categoryGraphQLType),
       description: type.categoryDescription,
     },
   },
-  type: g.GraphQLNonNull(productGraphQLType),
+  type: new g.GraphQLNonNull(productGraphQLType),
   resolve: async (source, args) => {
     const userId = await database.verifyAccessToken(args.accessToken);
     return database.sellProduct(userId, {
@@ -1344,15 +1354,15 @@ const markProductInHistory = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     productId: {
-      type: g.GraphQLNonNull(g.GraphQLID),
+      type: new g.GraphQLNonNull(g.GraphQLID),
       description: productGraphQLType.getFields().id.description,
     },
   },
-  type: g.GraphQLNonNull(productGraphQLType),
+  type: new g.GraphQLNonNull(productGraphQLType),
   resolve: async (source, args) => {
     const userId = await database.verifyAccessToken(args.accessToken);
     return database.markProductInHistory(userId, args.productId);
@@ -1366,11 +1376,11 @@ const likeProduct = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "アクセストークン",
     },
     productId: {
-      type: g.GraphQLNonNull(g.GraphQLID),
+      type: new g.GraphQLNonNull(g.GraphQLID),
       description: productGraphQLType.getFields().id.description,
     },
   },
@@ -1391,11 +1401,11 @@ const unlikeProduct = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "アクセストークン",
     },
     productId: {
-      type: g.GraphQLNonNull(g.GraphQLID),
+      type: new g.GraphQLNonNull(g.GraphQLID),
       description: productGraphQLType.getFields().id.description,
     },
   },
@@ -1419,19 +1429,19 @@ const addProductComment = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     productId: {
-      type: g.GraphQLNonNull(g.GraphQLID),
+      type: new g.GraphQLNonNull(g.GraphQLID),
       description: productGraphQLType.getFields().id.description,
     },
     body: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "本文",
     },
   },
-  type: g.GraphQLNonNull(productGraphQLType),
+  type: new g.GraphQLNonNull(productGraphQLType),
   resolve: async (source, args) => {
     return database.addCommentProduct(
       await database.verifyAccessToken(args.accessToken),
@@ -1458,45 +1468,47 @@ const updateProduct = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     productId: {
-      type: g.GraphQLNonNull(g.GraphQLID),
+      type: new g.GraphQLNonNull(g.GraphQLID),
       description: productGraphQLType.getFields().id.description,
     },
     name: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "商品名",
     },
     price: {
-      type: g.GraphQLNonNull(g.GraphQLInt),
+      type: new g.GraphQLNonNull(g.GraphQLInt),
       description: "値段",
     },
     description: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "説明文",
     },
     condition: {
-      type: g.GraphQLNonNull(type.conditionGraphQLType),
+      type: new g.GraphQLNonNull(type.conditionGraphQLType),
       description: type.conditionDescription,
     },
     category: {
-      type: g.GraphQLNonNull(type.categoryGraphQLType),
+      type: new g.GraphQLNonNull(type.categoryGraphQLType),
       description: type.categoryDescription,
     },
     addImageList: {
-      type: g.GraphQLNonNull(
-        g.GraphQLList(g.GraphQLNonNull(type.dataUrlGraphQLType))
+      type: new g.GraphQLNonNull(
+        new g.GraphQLList(new g.GraphQLNonNull(type.dataUrlGraphQLType))
       ),
       description: "追加する商品画像",
     },
     deleteImageIndex: {
-      type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(g.GraphQLInt))),
+      type: new g.GraphQLNonNull(
+        new g.GraphQLList(new g.GraphQLNonNull(g.GraphQLInt))
+      ),
       description: "削除する商品画像のインデックス 0始まり",
     },
   },
-  type: g.GraphQLNonNull(productGraphQLType),
+  type: new g.GraphQLNonNull(productGraphQLType),
   resolve: async (source, args) => {
     return database.updateProduct(
       await database.verifyAccessToken(args.accessToken),
@@ -1521,11 +1533,11 @@ const deleteProduct = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     productId: {
-      type: g.GraphQLNonNull(g.GraphQLID),
+      type: new g.GraphQLNonNull(g.GraphQLID),
       description: productGraphQLType.getFields().id.description,
     },
   },
@@ -1549,11 +1561,11 @@ const addDraftProduct = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     name: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "商品名",
     },
     price: {
@@ -1561,7 +1573,7 @@ const addDraftProduct = makeQueryOrMutationField<
       description: "価格 まだ決めていない場合はnull",
     },
     description: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "説明文",
     },
     condition: {
@@ -1573,13 +1585,13 @@ const addDraftProduct = makeQueryOrMutationField<
       description: type.categoryDescription + "まだ決めていない場合はnull",
     },
     images: {
-      type: g.GraphQLNonNull(
-        g.GraphQLList(g.GraphQLNonNull(type.dataUrlGraphQLType))
+      type: new g.GraphQLNonNull(
+        new g.GraphQLList(new g.GraphQLNonNull(type.dataUrlGraphQLType))
       ),
       description: "画像",
     },
   },
-  type: g.GraphQLNonNull(draftProductGraphQLType),
+  type: new g.GraphQLNonNull(draftProductGraphQLType),
   resolve: async (source, args) => {
     return database.addDraftProductData(
       await database.verifyAccessToken(args.accessToken),
@@ -1609,15 +1621,15 @@ const updateDraftProduct = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     draftId: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "下書きの商品を識別するためのID",
     },
     name: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "商品名",
     },
     price: {
@@ -1625,7 +1637,7 @@ const updateDraftProduct = makeQueryOrMutationField<
       description: "価格 まだ決めていない場合はnull",
     },
     description: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "説明文",
     },
     condition: {
@@ -1637,19 +1649,21 @@ const updateDraftProduct = makeQueryOrMutationField<
       description: type.categoryDescription + "まだ決めていない場合はnull",
     },
     deleteImagesAt: {
-      type: g.GraphQLNonNull(g.GraphQLList(g.GraphQLNonNull(g.GraphQLInt))),
+      type: new g.GraphQLNonNull(
+        new g.GraphQLList(new g.GraphQLNonNull(g.GraphQLInt))
+      ),
       description:
         "削除する画像のインデックス。必ず昇順。例:[0,3] 0番目と3番目を削除",
     },
     addImages: {
-      type: g.GraphQLNonNull(
-        g.GraphQLList(g.GraphQLNonNull(type.dataUrlGraphQLType))
+      type: new g.GraphQLNonNull(
+        new g.GraphQLList(new g.GraphQLNonNull(type.dataUrlGraphQLType))
       ),
       description: "末尾に追加する画像",
     },
   },
-  type: g.GraphQLNonNull(
-    g.GraphQLList(g.GraphQLNonNull(draftProductGraphQLType))
+  type: new g.GraphQLNonNull(
+    new g.GraphQLList(new g.GraphQLNonNull(draftProductGraphQLType))
   ),
   resolve: async (source, args) => {
     return database.updateDraftProduct(
@@ -1674,16 +1688,16 @@ const deleteDraftProduct = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     draftId: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "下書きの商品を識別するためのID",
     },
   },
-  type: g.GraphQLNonNull(
-    g.GraphQLList(g.GraphQLNonNull(draftProductGraphQLType))
+  type: new g.GraphQLNonNull(
+    new g.GraphQLList(new g.GraphQLNonNull(draftProductGraphQLType))
   ),
   resolve: async (source, args) => {
     const userId = await database.verifyAccessToken(args.accessToken);
@@ -1699,15 +1713,15 @@ const startTrade = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     productId: {
-      type: g.GraphQLNonNull(g.GraphQLID),
+      type: new g.GraphQLNonNull(g.GraphQLID),
       description: productGraphQLType.getFields().id.description,
     },
   },
-  type: g.GraphQLNonNull(tradeGraphQLType),
+  type: new g.GraphQLNonNull(tradeGraphQLType),
   resolve: async (source, args) => {
     const userId = await database.verifyAccessToken(args.accessToken);
     const productData = await database.getProduct(args.productId);
@@ -1728,19 +1742,19 @@ const addTradeComment = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     tradeId: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: tradeGraphQLType.getFields().id.description,
     },
     body: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: "本文",
     },
   },
-  type: g.GraphQLNonNull(tradeGraphQLType),
+  type: new g.GraphQLNonNull(tradeGraphQLType),
   resolve: async (source, args) => {
     return database.addTradeComment(
       await database.verifyAccessToken(args.accessToken),
@@ -1757,15 +1771,15 @@ const cancelTrade = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     tradeId: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: tradeGraphQLType.getFields().id.description,
     },
   },
-  type: g.GraphQLNonNull(tradeGraphQLType),
+  type: new g.GraphQLNonNull(tradeGraphQLType),
   resolve: async (source, args) => {
     return database.cancelTrade(
       await database.verifyAccessToken(args.accessToken),
@@ -1781,15 +1795,15 @@ const finishTrade = makeQueryOrMutationField<
 >({
   args: {
     accessToken: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: type.accessTokenDescription,
     },
     tradeId: {
-      type: g.GraphQLNonNull(g.GraphQLString),
+      type: new g.GraphQLNonNull(g.GraphQLString),
       description: tradeGraphQLType.getFields().id.description,
     },
   },
-  type: g.GraphQLNonNull(tradeGraphQLType),
+  type: new g.GraphQLNonNull(tradeGraphQLType),
   resolve: async (source, args) => {
     return database.finishTrade(
       await database.verifyAccessToken(args.accessToken),
