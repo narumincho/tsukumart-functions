@@ -185,7 +185,8 @@ const supportCrossOriginResourceSharing = (
 const allowOrigin = (httpHeaderOrigin: unknown): string => {
   if (
     httpHeaderOrigin === "http://localhost:2520" ||
-    httpHeaderOrigin === "https://tsukumart.com"
+    httpHeaderOrigin === "https://tsukumart.com" ||
+    httpHeaderOrigin === "https://studio.apollographql.com"
   ) {
     return httpHeaderOrigin;
   }
