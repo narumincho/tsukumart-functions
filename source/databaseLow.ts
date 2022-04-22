@@ -696,7 +696,7 @@ export const saveFileToCloudStorage = async (
 ): Promise<string> => {
   const id = createRandomFileId();
   const file = storage.file(id);
-  await file.save(data, { contentType: mimeType });
+  await file.save(Buffer.from(data), { contentType: mimeType });
   return id;
 };
 
