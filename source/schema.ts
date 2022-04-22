@@ -1,3 +1,4 @@
+/* eslint-disable require-atomic-updates */
 import * as UtilUrl from "./url";
 import * as database from "./database";
 import * as g from "graphql";
@@ -72,7 +73,7 @@ type ReturnLoop<Type> = Type extends { id: string }
 const makeQueryOrMutationField = <
   Args extends { [k in string]: unknown },
   Type
->(paramter: {
+>(parameter: {
   type: g.GraphQLOutputType;
   args: {
     [a in keyof Args]: {
@@ -87,7 +88,7 @@ const makeQueryOrMutationField = <
     info: g.GraphQLResolveInfo
   ) => Promise<Return<Type>>;
   description: string;
-}): g.GraphQLFieldConfig<void, void, any> => paramter;
+}): g.GraphQLFieldConfig<void, void, any> => parameter;
 /*
  *  =============================================================
  *                          Product
