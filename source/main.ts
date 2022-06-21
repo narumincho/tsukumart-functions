@@ -33,7 +33,7 @@ export const html = functions
         iconUrl: new URL("https://tsukumart.com/assets/logo_bird.png"),
         coverImageUrl: descriptionAndImageUrl.imageUrl,
         description: descriptionAndImageUrl.description,
-        scriptUrlList: [new URL("https://tsukumart.com/call.js")],
+        scriptUrlList: [new URL("https://tsukumart.com/assets/index.js")],
         styleUrlList: [],
         twitterCard: "SummaryCardWithLargeImage",
         language: "Japanese",
