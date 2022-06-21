@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: "16"
       - name: Install npm dependencies (npm ci)
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: Transpile TypeScript (npx tsc)
         run: npx tsc --project source
       - name: deploy functions to firebase
