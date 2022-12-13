@@ -57,7 +57,7 @@ const getAndSaveUserImage = async (imageId: URL): Promise<string> => {
   const response: AxiosResponse<Buffer> = await axios.get(imageId.toString(), {
     responseType: "arraybuffer",
   });
-  const mimeType: string = response.headers["content-type"];
+  const mimeType: string = response.headers["content-type"] ?? "";
   return database.saveImage(response.data, mimeType);
 };
 
